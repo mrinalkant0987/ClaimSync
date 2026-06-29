@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "ClaimSyncHumanReviewApp",
+    "kind": "appVersion",
+    "apiVersion": "apps.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [
+      {
+        "name": "ClaimSyncHumanReviewApp.uiapp",
+        "kind": "appVersion",
+        "url": "https://staging.uipath.com/ddb4530c-67dc-443c-8b3a-c5cc7bfae4dc/apps_/default/api/v1/default/models/ID7a9f918d0e434eec9e53663b249c45e7/publish/versions/1/package",
+        "key": "IDe086c014b1554a5d986f84cd828d86be"
+      }
+    ],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "ClaimSyncHumanReviewApp",
+      "description": "",
+      "appSystemName": "ID7a9f918d0e434eec9e53663b249c45e7",
+      "version": "1.0.0",
+      "isAppPublic": false,
+      "expressionLanguage": "VB",
+      "publishNote": null,
+      "uiappFile": "IDe086c014b1554a5d986f84cd828d86be",
+      "uiappFileName": "ClaimSyncHumanReviewApp.uiapp",
+      "isUnifiedProject": false
+    },
+    "locks": [],
+    "key": "IDe086c014b1554a5d986f84cd828d86be"
+  }
+}

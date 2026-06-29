@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "AG_PDF_Extraction",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "129f3501-6d1c-417f-a807-3ce2316b6759",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "AG_PDF_Extraction",
+      "description": null
+    },
+    "locks": [],
+    "key": "a95fd732-8a31-45e9-b6c1-4c9f4682c994"
+  }
+}

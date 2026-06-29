@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "AG_Final_Summary",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "27999980-bd2e-4538-813f-7d336d90cac0",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "AG_Final_Summary",
+      "description": null
+    },
+    "locks": [],
+    "key": "356634a2-69c0-468c-84f1-2a5b9c9d4628"
+  }
+}

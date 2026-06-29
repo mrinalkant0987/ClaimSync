@@ -1,0 +1,27 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "ClaimDocuments",
+    "kind": "bucket",
+    "type": "orchestratorBucket",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Orchestrator",
+      "name": "ClaimDocuments",
+      "description": "Storage for claim PDF documents uploaded from workflow",
+      "options": null,
+      "tags": []
+    },
+    "locks": [],
+    "key": "17b0e2a0-68f3-4f03-a083-62200da3f35d"
+  }
+}

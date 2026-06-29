@@ -1,0 +1,6 @@
+{
+  "ProjectType": "Process",
+  "Name": "WF_Update_Claim_Record",
+  "Description": null,
+  "MainFile": "Main.xaml"
+}

@@ -1,0 +1,150 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib"
+ xmlns:si="clr-namespace:System.IO;assembly=System.Private.CoreLib"
+ xmlns:ui="http://schemas.uipath.com/workflow/activities"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_ClaimId" Type="InArgument(x:String)" />
+    <x:Property Name="in_ClaimFolderPath" Type="InArgument(x:String)" />
+    <x:Property Name="in_MissingDocuments" Type="InArgument(scg:List(x:String))" />
+    <x:Property Name="out_RequestMessage" Type="OutArgument(x:String)" />
+  </x:Members>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="14">
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>Newtonsoft.Json</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="16">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>netstandard</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.Net.Primitives</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Runtime</AssemblyReference>
+      <AssemblyReference>System.Runtime.InteropServices</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="WF_Send_Missing_Document_Request" sap:VirtualizedContainerService.HintSize="440,1200" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="Status" />
+      <Variable x:TypeArguments="x:String" Name="AuditFilePath" />
+      <Variable x:TypeArguments="x:String" Name="AuditEntry" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:ManualTrigger Result="{x:Null}" DisplayName="Manual Trigger" sap2010:WorkflowViewState.IdRef="ManualTrigger_1" />
+    <Assign DisplayName="STEP 0 — Initialize out_RequestMessage" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[out_RequestMessage]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[ "" ]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:LogMessage DisplayName="Log: Requesting missing documents" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;Requesting missing documents&quot;]" />
+    <Assign DisplayName="STEP 1-2 — Build and assign out_RequestMessage" sap2010:WorkflowViewState.IdRef="Assign_2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[out_RequestMessage]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">["Missing documents for claim " + If(Not String.IsNullOrEmpty(in_ClaimId), in_ClaimId, "(unknown)") + ": " + If(in_MissingDocuments IsNot Nothing AndAlso in_MissingDocuments.Count &gt; 0, String.Join(", ", in_MissingDocuments), "(unspecified)")]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="STEP 4 — Assign Status = pending_documents" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[Status]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">["pending_documents"]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <If Condition="[String.IsNullOrEmpty(out_RequestMessage)]" DisplayName="STEP 5 — Final Safety: ensure out_RequestMessage always assigned" sap2010:WorkflowViewState.IdRef="If_1">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Assign DisplayName="Assign: MissingDocumentRequestFailed" sap2010:WorkflowViewState.IdRef="Assign_4">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[out_RequestMessage]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">["MissingDocumentRequestFailed"]</InArgument>
+          </Assign.Value>
+        </Assign>
+      </If.Then>
+    </If>
+    <Assign DisplayName="STEP 6 — Build AuditFilePath" sap2010:WorkflowViewState.IdRef="Assign_5">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[AuditFilePath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrEmpty(in_ClaimFolderPath), System.IO.Path.Combine(in_ClaimFolderPath, System.IO.Path.GetFileName(in_ClaimFolderPath) + ".txt"), "")]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="STEP 6 — Build AuditEntry" sap2010:WorkflowViewState.IdRef="Assign_6">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[AuditEntry]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">["------------------------------------------" + Environment.NewLine + "WF_Send_Missing_Document_Request" + Environment.NewLine + "------------------------------------------" + Environment.NewLine + "claimId : " + If(in_ClaimId IsNot Nothing, in_ClaimId, "") + Environment.NewLine + "missingDocuments : " + If(in_MissingDocuments IsNot Nothing, String.Join(", ", in_MissingDocuments), "") + Environment.NewLine + "requestMessage : " + If(out_RequestMessage IsNot Nothing, out_RequestMessage, "") + Environment.NewLine + "Status : " + If(Status IsNot Nothing, Status, "") + Environment.NewLine + "timestamp : " &amp; DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") &amp; Environment.NewLine &amp; Environment.NewLine]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <If Condition="[Not String.IsNullOrEmpty(AuditFilePath)]" DisplayName="STEP 6 — Append audit if path valid" sap2010:WorkflowViewState.IdRef="If_2">
+      <If.Then>
+        <TryCatch DisplayName="TryCatch: Append audit safely" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+          <TryCatch.Try>
+            <InvokeMethod DisplayName="Append to audit file" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" MethodName="AppendAllText" TargetType="si:File">
+              <InArgument x:TypeArguments="x:String">[AuditFilePath]</InArgument>
+              <InArgument x:TypeArguments="x:String">[AuditEntry]</InArgument>
+            </InvokeMethod>
+          </TryCatch.Try>
+          <TryCatch.Catches>
+            <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_1">
+              <ActivityAction x:TypeArguments="s:Exception">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="s:Exception" Name="exAudit" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Audit append failed — ignore" sap2010:WorkflowViewState.IdRef="Sequence_2">
+                  <ui:LogMessage DisplayName="Log: Audit append failed" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Warn" Message="[&quot;Audit append failed: &quot; + exAudit.Message]" />
+                </Sequence>
+              </ActivityAction>
+            </Catch>
+          </TryCatch.Catches>
+        </TryCatch>
+      </If.Then>
+    </If>
+  </Sequence>
+</Activity>

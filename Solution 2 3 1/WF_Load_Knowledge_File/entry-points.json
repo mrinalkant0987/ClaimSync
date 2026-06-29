@@ -1,0 +1,30 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "Main.xaml",
+      "uniqueId": "23e28263-c8d5-46c6-8036-04fb97c5fa30",
+      "type": "Process",
+      "input": {
+        "type": "object",
+        "properties": {
+          "in_FilePath": {
+            "type": "string",
+            "x-default-expression": "\"C:\\Users\\USER\\Documents\\Hackathon\\Knowledge Base\\00_Process_Context_and_BRD.docx\"",
+            "default": "C:\\Users\\USER\\Documents\\Hackathon\\Knowledge Base\\00_Process_Context_and_BRD.docx"
+          }
+        },
+        "required": []
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "out_FileContent": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

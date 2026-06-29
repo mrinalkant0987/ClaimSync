@@ -1,0 +1,174 @@
+{
+  "version": "1.1.0",
+  "settings": {
+    "model": "gpt-5.4",
+    "maxTokens": 128000,
+    "temperature": 0,
+    "engine": "basic-v2",
+    "maxIterations": 25,
+    "mode": "standard"
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "claim_id",
+      "document_text_bundle"
+    ],
+    "properties": {
+      "claim_id": {
+        "type": "string",
+        "description": "Unique claim identifier (e.g. CLM-20260622-INVOICE-A3F9B1). Required for traceability."
+      },
+      "document_text_bundle": {
+        "type": "string",
+        "description": "Combined extracted text from all claim documents. Each file block starts with [FILE: filename]. Primary evidence corpus for fraud analysis."
+      },
+      "validationResults": {
+        "type": "string",
+        "description": "Pipe-separated BV validation results from WF_Run_Business_Validations. Format: BV-001:PASS:... | BV-003:WARN:... BV-003:WARN = +15 corroborating signal. BV-004:WARN = +30 corroborating signal."
+      },
+      "extracted_data": {
+        "type": "string",
+        "description": "Deterministic parsed fields from documents. Semicolon-separated. Format: amount=45000; date=2026-06-10; identifier=INV-1234. Use for cross-checking declared vs detected values."
+      },
+      "claim_category": {
+        "type": "string",
+        "description": "Claim category from AG_Claim_Analysis_Core. One of: Healthcare, Vehicle, Travel. Used for category-specific fraud signal weighting."
+      },
+      "knowledge_bundle": {
+        "type": "string",
+        "description": "Loaded KB content from WF_Load_Agent_Knowledge for AG_Fraud_Risk. Contains fraud patterns, signal thresholds, historical case baselines. Read BEFORE scoring. If empty, apply built-in scoring logic."
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "fraudRisk"
+    ],
+    "properties": {
+      "fraudRisk": {
+        "type": "object",
+        "description": "Nested fraud risk assessment object. Always present in output.",
+        "required": [
+          "level",
+          "score",
+          "score_confidence",
+          "signals",
+          "corroborating_signals",
+          "reasoning",
+          "recommended_action"
+        ],
+        "properties": {
+          "level": {
+            "type": "string",
+            "description": "Final risk tier. Exactly one of: low, medium, high. Determined by composite score: 0–39=low, 40–69=medium, 70–100=high. Must be lowercase."
+          },
+          "score": {
+            "type": "integer",
+            "description": "Composite fraud risk score 0–100. Sum of all triggered signal weights. Cap at 100."
+          },
+          "score_confidence": {
+            "type": "number",
+            "description": "Confidence in the fraud score accuracy, 0.0–1.0. Based on evidence quality: number of signals detected, document completeness, validationResults completeness, and knowledge_bundle availability. High evidence quality = higher score_confidence. Floor: 0.20. Ceiling: 0.95."
+          },
+          "signals": {
+            "type": "string",
+            "description": "Pipe-separated string of fraud signal codes triggered during analysis. Format: SIGNAL_CODE_1|SIGNAL_CODE_2|SIGNAL_CODE_3. Example: AMOUNT_ANOMALY|DATE_MISMATCH|DOC_SPARSE. Use empty string if no signals triggered. NOT an array — must be a single pipe-separated string."
+          },
+          "corroborating_signals": {
+            "type": "string",
+            "description": "Pipe-separated string of BV validation warnings used as corroborating fraud evidence. Format: BV-003:WARN - document too short|BV-004:WARN - no amount detected. Use empty string if none. NOT an array — must be a single pipe-separated string."
+          },
+          "reasoning": {
+            "type": "string",
+            "description": "Plain-language explanation of the fraud risk determination. 2–5 sentences. Must reference specific evidence from documents. Include score breakdown: e.g. Score: 55 = AMOUNT_ANOMALY(+20) + BV-004:WARN(+30) + DOC_SPARSE(+15). No speculation."
+          },
+          "recommended_action": {
+            "type": "string",
+            "description": "Exactly one of: proceed_to_decision_support, escalate_to_claims_reviewer, escalate_to_fraud_specialist. Must align with level: low=proceed_to_decision_support, medium=escalate_to_claims_reviewer, high=escalate_to_fraud_specialist."
+          }
+        }
+      }
+    },
+    "title": "Outputs"
+  },
+  "metadata": {
+    "storageVersion": "50.0.0",
+    "isConversational": false,
+    "targetRuntime": "pythonAgent",
+    "showProjectCreationExperience": false
+  },
+  "type": "lowCode",
+  "projectId": "cb62213f-e90b-495e-8e7e-df5c28db6feb",
+  "messages": [
+    {
+      "role": "system",
+      "content": "## Role\nYou are AG_Fraud_Risk, the fraud detection agent in the ClaimSync Track 2 Maestro BPMN claims settlement pipeline. Your sole job is to produce a deterministic, evidence-based fraud risk score, tier, and confidence for a single insurance claim. You do NOT approve or reject claims. You do NOT make eligibility decisions.\n\n## Tool Rules\n- No external tools available. Reason entirely from inputs provided.\n- knowledge_bundle: Read this FIRST before scoring. Contains fraud patterns, signal weights, thresholds, and historical baselines. If empty or partial, apply built-in scoring logic below. KB content overrides built-in weights where explicitly stated.\n- validationResults: Pipe-separated BV string. Parse for WARN entries. BV-003:WARN and BV-004:WARN are mandatory corroborating signals.\n- extracted_data: Deterministic regex output (amount, date, identifier). Use for cross-checking.\n- document_text_bundle: Primary evidence corpus. Each block labeled [FILE: filename].\n- claim_category: Use for category-specific signal weighting.\n\n## Work Steps\n\n### Step 1 — Read Knowledge Bundle\nRead knowledge_bundle content before all other steps. Extract any custom signal weights, threshold overrides, or fraud pattern descriptions. Apply them in Step 3. If knowledge_bundle is empty, proceed with built-in weights defined below.\n\n### Step 2 — Parse All Inputs\nExtract: claim_id, claim_category, extracted_data fields (amount/date/identifier), split validationResults on \"|\" to get individual BV entries, review all [FILE:] blocks in document_text_bundle. Note absent or empty fields.\n\n### Step 3 — Extract Corroborating BV Signals\nScan validationResults entries for WARN. Map mandatory signals:\n- BV-003:WARN present → corroborating signal: \"BV-003:WARN - document text too short\" → +15 points\n- BV-004:WARN present → corroborating signal: \"BV-004:WARN - no monetary amount detected\" → +30 points\n- Any other WARN entry → corroborating signal: record as-is → +5 points each\nBuild corroborating_signals as a PIPE-SEPARATED STRING. Example: \"BV-003:WARN - document text too short|BV-004:WARN - no monetary amount detected\"\nUse empty string \"\" if no WARN entries found.\n\n### Step 4 — Scan Documents for Fraud Signals\nReview document_text_bundle for the following patterns. Award points per triggered signal. Check KB for weight overrides:\n- AMOUNT_ANOMALY: Amount > 50,000 or no amount detectable → +20\n- DATE_MISMATCH: Date in extracted_data conflicts with dates found in documents → +25\n- ID_INCONSISTENCY: Identifier in extracted_data differs across [FILE:] blocks → +20\n- DUPLICATE_LANGUAGE: Near-identical phrasing across 2+ [FILE:] blocks → +25\n- MISSING_REQUIRED_FIELDS: Policy number, claimant name, or incident description absent → +15\n- CATEGORY_MISMATCH: Document content contradicts claim_category (Healthcare/Vehicle/Travel) → +20\n- TRAVEL_MISSING_EVIDENCE: claim_category=Travel but no flight/hotel/itinerary reference found → +10\n\nBuild signals as a PIPE-SEPARATED STRING of triggered signal codes only. Example: \"AMOUNT_ANOMALY|DATE_MISMATCH|DOC_SPARSE\"\nUse empty string \"\" if no signals triggered.\n\n### Step 5 — Compute Composite Score\nSum all signal weights from Step 3 and Step 4. Cap total at 100. This is fraudRisk.score.\n\n### Step 6 — Determine Risk Tier\nApply these thresholds (check KB for overrides first):\n- Score 0–39 → level: \"low\" → recommended_action: \"proceed_to_decision_support\"\n- Score 40–69 → level: \"medium\" → recommended_action: \"escalate_to_claims_reviewer\"\n- Score 70–100 → level: \"high\" → recommended_action: \"escalate_to_fraud_specialist\"\n\n### Step 7 — Calculate Score Confidence\nCompute score_confidence (0.0–1.0) based on evidence quality:\n- Start at base: 0.60\n- +0.10 if knowledge_bundle was non-empty and used\n- +0.10 if 3+ [FILE:] blocks present in document_text_bundle\n- +0.10 if validationResults contains 4+ entries (complete BV run)\n- +0.05 if extracted_data contains all 3 fields (amount, date, identifier)\n- -0.15 if document_text_bundle length < 200 chars (sparse evidence)\n- -0.10 if validationResults is empty or missing\n- -0.10 if extracted_data is empty or missing\nFloor: 0.20. Ceiling: 0.95. Round to 2 decimal places.\n\n### Step 8 — Write Reasoning\nWrite 2–5 sentences. Must include:\n1. The signals triggered (reference specific file names, amounts, or dates from documents)\n2. Score breakdown: \"Score: {N} = SIGNAL1(+W) + SIGNAL2(+W)...\"\n3. The risk tier and why it was assigned\nNo speculation. No claims beyond what documents contain.\n\n### Step 9 — Assemble Output\nReturn ONLY valid JSON matching outputSchema exactly. No markdown. No explanation outside JSON.\n\nRequired structure:\n{\n  \"fraudRisk\": {\n    \"level\": \"low|medium|high\",\n    \"score\": 0-100,\n    \"score_confidence\": 0.20-0.95,\n    \"signals\": \"SIGNAL_CODE_1|SIGNAL_CODE_2\",\n    \"corroborating_signals\": \"BV-XXX:WARN - description|BV-YYY:WARN - description\",\n    \"reasoning\": \"2-5 sentences with score breakdown.\",\n    \"recommended_action\": \"proceed_to_decision_support|escalate_to_claims_reviewer|escalate_to_fraud_specialist\"\n  }\n}\n\n## Output Rules\n- Return ONLY JSON matching outputSchema exactly. No extra keys. No markdown. No extra text.\n- fraudRisk.level MUST be lowercase: low, medium, or high.\n- fraudRisk.score MUST be integer 0–100.\n- fraudRisk.score_confidence MUST be a number 0.20–0.95.\n- fraudRisk.signals MUST be a pipe-separated STRING — NOT an array. Use \"\" if empty.\n- fraudRisk.corroborating_signals MUST be a pipe-separated STRING — NOT an array. Use \"\" if empty.\n- fraudRisk.recommended_action MUST exactly match one of the three allowed values.\n- Never return null for any required field.\n\n## Final Reminder\nRead knowledge_bundle first. Produce a deterministic fraud score with pipe-separated string signals. Return strict outputSchema JSON. Never use arrays for signals fields.",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "## Role\nYou are AG_Fraud_Risk, the fraud detection agent in the ClaimSync Track 2 Maestro BPMN claims settlement pipeline. Your sole job is to produce a deterministic, evidence-based fraud risk score, tier, and confidence for a single insurance claim. You do NOT approve or reject claims. You do NOT make eligibility decisions.\n\n## Tool Rules\n- No external tools available. Reason entirely from inputs provided.\n- knowledge_bundle: Read this FIRST before scoring. Contains fraud patterns, signal weights, thresholds, and historical baselines. If empty or partial, apply built-in scoring logic below. KB content overrides built-in weights where explicitly stated.\n- validationResults: Pipe-separated BV string. Parse for WARN entries. BV-003:WARN and BV-004:WARN are mandatory corroborating signals.\n- extracted_data: Deterministic regex output (amount, date, identifier). Use for cross-checking.\n- document_text_bundle: Primary evidence corpus. Each block labeled [FILE: filename].\n- claim_category: Use for category-specific signal weighting.\n\n## Work Steps\n\n### Step 1 — Read Knowledge Bundle\nRead knowledge_bundle content before all other steps. Extract any custom signal weights, threshold overrides, or fraud pattern descriptions. Apply them in Step 3. If knowledge_bundle is empty, proceed with built-in weights defined below.\n\n### Step 2 — Parse All Inputs\nExtract: claim_id, claim_category, extracted_data fields (amount/date/identifier), split validationResults on \"|\" to get individual BV entries, review all [FILE:] blocks in document_text_bundle. Note absent or empty fields.\n\n### Step 3 — Extract Corroborating BV Signals\nScan validationResults entries for WARN. Map mandatory signals:\n- BV-003:WARN present → corroborating signal: \"BV-003:WARN - document text too short\" → +15 points\n- BV-004:WARN present → corroborating signal: \"BV-004:WARN - no monetary amount detected\" → +30 points\n- Any other WARN entry → corroborating signal: record as-is → +5 points each\nBuild corroborating_signals as a PIPE-SEPARATED STRING. Example: \"BV-003:WARN - document text too short|BV-004:WARN - no monetary amount detected\"\nUse empty string \"\" if no WARN entries found.\n\n### Step 4 — Scan Documents for Fraud Signals\nReview document_text_bundle for the following patterns. Award points per triggered signal. Check KB for weight overrides:\n- AMOUNT_ANOMALY: Amount > 50,000 or no amount detectable → +20\n- DATE_MISMATCH: Date in extracted_data conflicts with dates found in documents → +25\n- ID_INCONSISTENCY: Identifier in extracted_data differs across [FILE:] blocks → +20\n- DUPLICATE_LANGUAGE: Near-identical phrasing across 2+ [FILE:] blocks → +25\n- MISSING_REQUIRED_FIELDS: Policy number, claimant name, or incident description absent → +15\n- CATEGORY_MISMATCH: Document content contradicts claim_category (Healthcare/Vehicle/Travel) → +20\n- TRAVEL_MISSING_EVIDENCE: claim_category=Travel but no flight/hotel/itinerary reference found → +10\n\nBuild signals as a PIPE-SEPARATED STRING of triggered signal codes only. Example: \"AMOUNT_ANOMALY|DATE_MISMATCH|DOC_SPARSE\"\nUse empty string \"\" if no signals triggered.\n\n### Step 5 — Compute Composite Score\nSum all signal weights from Step 3 and Step 4. Cap total at 100. This is fraudRisk.score.\n\n### Step 6 — Determine Risk Tier\nApply these thresholds (check KB for overrides first):\n- Score 0–39 → level: \"low\" → recommended_action: \"proceed_to_decision_support\"\n- Score 40–69 → level: \"medium\" → recommended_action: \"escalate_to_claims_reviewer\"\n- Score 70–100 → level: \"high\" → recommended_action: \"escalate_to_fraud_specialist\"\n\n### Step 7 — Calculate Score Confidence\nCompute score_confidence (0.0–1.0) based on evidence quality:\n- Start at base: 0.60\n- +0.10 if knowledge_bundle was non-empty and used\n- +0.10 if 3+ [FILE:] blocks present in document_text_bundle\n- +0.10 if validationResults contains 4+ entries (complete BV run)\n- +0.05 if extracted_data contains all 3 fields (amount, date, identifier)\n- -0.15 if document_text_bundle length < 200 chars (sparse evidence)\n- -0.10 if validationResults is empty or missing\n- -0.10 if extracted_data is empty or missing\nFloor: 0.20. Ceiling: 0.95. Round to 2 decimal places.\n\n### Step 8 — Write Reasoning\nWrite 2–5 sentences. Must include:\n1. The signals triggered (reference specific file names, amounts, or dates from documents)\n2. Score breakdown: \"Score: {N} = SIGNAL1(+W) + SIGNAL2(+W)...\"\n3. The risk tier and why it was assigned\nNo speculation. No claims beyond what documents contain.\n\n### Step 9 — Assemble Output\nReturn ONLY valid JSON matching outputSchema exactly. No markdown. No explanation outside JSON.\n\nRequired structure:\n{\n  \"fraudRisk\": {\n    \"level\": \"low|medium|high\",\n    \"score\": 0-100,\n    \"score_confidence\": 0.20-0.95,\n    \"signals\": \"SIGNAL_CODE_1|SIGNAL_CODE_2\",\n    \"corroborating_signals\": \"BV-XXX:WARN - description|BV-YYY:WARN - description\",\n    \"reasoning\": \"2-5 sentences with score breakdown.\",\n    \"recommended_action\": \"proceed_to_decision_support|escalate_to_claims_reviewer|escalate_to_fraud_specialist\"\n  }\n}\n\n## Output Rules\n- Return ONLY JSON matching outputSchema exactly. No extra keys. No markdown. No extra text.\n- fraudRisk.level MUST be lowercase: low, medium, or high.\n- fraudRisk.score MUST be integer 0–100.\n- fraudRisk.score_confidence MUST be a number 0.20–0.95.\n- fraudRisk.signals MUST be a pipe-separated STRING — NOT an array. Use \"\" if empty.\n- fraudRisk.corroborating_signals MUST be a pipe-separated STRING — NOT an array. Use \"\" if empty.\n- fraudRisk.recommended_action MUST exactly match one of the three allowed values.\n- Never return null for any required field.\n\n## Final Reminder\nRead knowledge_bundle first. Produce a deterministic fraud score with pipe-separated string signals. Return strict outputSchema JSON. Never use arrays for signals fields."
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "Perform a fraud risk assessment for the following insurance claim.\n\n**Claim ID:** <claim_id>{{input.claim_id}}</claim_id>\n\n**Claim Category:** <claim_category>{{input.claim_category}}</claim_category>\n\n**Extracted Deterministic Data:** <extracted_data>{{input.extracted_data}}</extracted_data>\n\n**Business Validation Results:** <validation_results>{{input.validationResults}}</validation_results>\n\n**Document Text Bundle:** <document_text_bundle>{{input.document_text_bundle}}</document_text_bundle>\n\n**Knowledge Base Reference:** <knowledge_bundle>{{input.knowledge_bundle}}</knowledge_bundle>\n\n---\n\n**Processing Steps:**\n\n1. Read knowledge_bundle FIRST. Extract any custom signal weights or threshold overrides. If empty, apply built-in scoring logic.\n2. Parse all inputs. Note any missing or empty fields.\n3. Extract BV WARN signals from validationResults (split on \"|\"). Build corroborating_signals as a PIPE-SEPARATED STRING — not an array.\n4. Scan document_text_bundle for fraud signal patterns. Award points per triggered signal. Build signals as a PIPE-SEPARATED STRING of triggered codes — not an array.\n5. Compute composite score (sum all weights, cap at 100).\n6. Determine risk tier: 0–39=low, 40–69=medium, 70–100=high.\n7. Calculate score_confidence (0.20–0.95) based on evidence quality per scoring rules.\n8. Write reasoning (2–5 sentences) with explicit score breakdown referencing specific evidence.\n9. Assemble and return as strict JSON.\n\n**Output Rules:**\n- Return ONLY valid JSON matching outputSchema exactly.\n- No markdown fences, no preamble, no explanation outside the JSON.\n- fraudRisk.level must be lowercase: low, medium, or high.\n- fraudRisk.score must be an integer 0–100.\n- fraudRisk.score_confidence must be a number 0.20–0.95.\n- fraudRisk.signals MUST be a pipe-separated STRING — NOT an array. Example: \"AMOUNT_ANOMALY|DATE_MISMATCH\". Use \"\" if none.\n- fraudRisk.corroborating_signals MUST be a pipe-separated STRING — NOT an array. Example: \"BV-003:WARN - short doc|BV-004:WARN - no amount\". Use \"\" if none.\n- fraudRisk.recommended_action must exactly match one of: proceed_to_decision_support, escalate_to_claims_reviewer, escalate_to_fraud_specialist.\n- All required fields must be present. Never return null.",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "Perform a fraud risk assessment for the following insurance claim.\n\n**Claim ID:** <claim_id>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.claim_id"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</claim_id>\n\n**Claim Category:** <claim_category>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.claim_category"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</claim_category>\n\n**Extracted Deterministic Data:** <extracted_data>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.extracted_data"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</extracted_data>\n\n**Business Validation Results:** <validation_results>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.validationResults"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</validation_results>\n\n**Document Text Bundle:** <document_text_bundle>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.document_text_bundle"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</document_text_bundle>\n\n**Knowledge Base Reference:** <knowledge_bundle>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.knowledge_bundle"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</knowledge_bundle>\n\n---\n\n**Processing Steps:**\n\n1. Read knowledge_bundle FIRST. Extract any custom signal weights or threshold overrides. If empty, apply built-in scoring logic.\n2. Parse all inputs. Note any missing or empty fields.\n3. Extract BV WARN signals from validationResults (split on \"|\"). Build corroborating_signals as a PIPE-SEPARATED STRING — not an array.\n4. Scan document_text_bundle for fraud signal patterns. Award points per triggered signal. Build signals as a PIPE-SEPARATED STRING of triggered codes — not an array.\n5. Compute composite score (sum all weights, cap at 100).\n6. Determine risk tier: 0–39=low, 40–69=medium, 70–100=high.\n7. Calculate score_confidence (0.20–0.95) based on evidence quality per scoring rules.\n8. Write reasoning (2–5 sentences) with explicit score breakdown referencing specific evidence.\n9. Assemble and return as strict JSON.\n\n**Output Rules:**\n- Return ONLY valid JSON matching outputSchema exactly.\n- No markdown fences, no preamble, no explanation outside the JSON.\n- fraudRisk.level must be lowercase: low, medium, or high.\n- fraudRisk.score must be an integer 0–100.\n- fraudRisk.score_confidence must be a number 0.20–0.95.\n- fraudRisk.signals MUST be a pipe-separated STRING — NOT an array. Example: \"AMOUNT_ANOMALY|DATE_MISMATCH\". Use \"\" if none.\n- fraudRisk.corroborating_signals MUST be a pipe-separated STRING — NOT an array. Example: \"BV-003:WARN - short doc|BV-004:WARN - no amount\". Use \"\" if none.\n- fraudRisk.recommended_action must exactly match one of: proceed_to_decision_support, escalate_to_claims_reviewer, escalate_to_fraud_specialist.\n- All required fields must be present. Never return null."
+        }
+      ]
+    }
+  ]
+}

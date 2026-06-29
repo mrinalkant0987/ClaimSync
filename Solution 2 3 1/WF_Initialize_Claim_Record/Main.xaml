@@ -1,0 +1,360 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib"
+ xmlns:si="clr-namespace:System.IO;assembly=System.Private.CoreLib"
+ xmlns:ui="http://schemas.uipath.com/workflow/activities"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_ClaimFolderPath" Type="InArgument(x:String)" />
+    <x:Property Name="out_ClaimId" Type="OutArgument(x:String)" />
+    <x:Property Name="out_IsPolicyDocumentAvailable" Type="OutArgument(x:Boolean)" />
+    <x:Property Name="out_IsIdProofAvailable" Type="OutArgument(x:Boolean)" />
+    <x:Property Name="out_AreAllMandatoryDocumentsAvailable" Type="OutArgument(x:Boolean)" />
+    <x:Property Name="out_PolicyCategory" Type="OutArgument(x:String)" />
+  </x:Members>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="16">
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Text.RegularExpressions</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>Newtonsoft.Json</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="13">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Runtime</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>netstandard</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="WF_Initialize_Claim_Record" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="timestampPart" />
+      <Variable x:TypeArguments="x:String" Name="randomPart" />
+      <Variable x:TypeArguments="x:String" Name="safeFolderName" />
+      <Variable x:TypeArguments="x:String" Name="auditFilePath" />
+      <Variable x:TypeArguments="x:String" Name="auditEntry" />
+      <Variable x:TypeArguments="x:Object" Name="policyFiles" />
+      <Variable x:TypeArguments="x:Boolean" Name="isPolicyAvailable" />
+      <Variable x:TypeArguments="x:String" Name="policyCategory" />
+      <Variable x:TypeArguments="x:Object" Name="idFiles" />
+      <Variable x:TypeArguments="x:Boolean" Name="isIdAvailable" />
+      <Variable x:TypeArguments="x:Boolean" Name="areAllMandatoryAvailable" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:ManualTrigger Result="{x:Null}" DisplayName="Manual Trigger" sap2010:WorkflowViewState.IdRef="ManualTrigger_1" />
+    <Assign DisplayName="STEP 1 — Init out_ClaimId" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[out_ClaimId]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[ "" ]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <If Condition="[String.IsNullOrEmpty(in_ClaimFolderPath)]" DisplayName="STEP 2 — Validate Input" sap2010:WorkflowViewState.IdRef="If_1">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Assign DisplayName="STEP 2 — Invalid Path ID" sap2010:WorkflowViewState.IdRef="Assign_2">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[out_ClaimId]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">["INVALID_CLAIM_" + Now.ToString("yyyyMMddHHmmss")]</InArgument>
+          </Assign.Value>
+        </Assign>
+      </If.Then>
+      <If.Else>
+        <Sequence DisplayName="STEP 3-6 — Build Claim ID" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="STEP 3 — Safe Folder Name" sap2010:WorkflowViewState.IdRef="Assign_4">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[safeFolderName]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(String.IsNullOrEmpty(in_ClaimFolderPath), "UNKNOWN", If(String.IsNullOrEmpty(System.Text.RegularExpressions.Regex.Replace(System.IO.Path.GetFileName(in_ClaimFolderPath), "[^a-zA-Z0-9_-]", "")), "UNKNOWN", System.Text.RegularExpressions.Regex.Replace(System.IO.Path.GetFileName(in_ClaimFolderPath), "[^a-zA-Z0-9_-]", "")))]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="STEP 4 — Timestamp" sap2010:WorkflowViewState.IdRef="Assign_5">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[timestampPart]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[Now.ToString("yyyyMMddHHmmss")]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="STEP 5 — Random Suffix" sap2010:WorkflowViewState.IdRef="Assign_6">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[randomPart]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[New Random().Next(1000, 9999).ToString()]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="STEP 6 — Build Claim ID" sap2010:WorkflowViewState.IdRef="Assign_7">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_ClaimId]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">["CLM-" + timestampPart + "-" + safeFolderName + "-" + randomPart]</InArgument>
+            </Assign.Value>
+          </Assign>
+        </Sequence>
+      </If.Else>
+    </If>
+    <If Condition="[String.IsNullOrEmpty(out_ClaimId)]" DisplayName="STEP 7 — Final Safety" sap2010:WorkflowViewState.IdRef="If_2">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Assign DisplayName="STEP 7 — Fallback ID" sap2010:WorkflowViewState.IdRef="Assign_3">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[out_ClaimId]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">["CLM-" + Now.ToString("yyyyMMddHHmmss") + "-FALLBACK"]</InArgument>
+          </Assign.Value>
+        </Assign>
+      </If.Then>
+    </If>
+    <ui:LogMessage DisplayName="Log Generated Claim ID" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;WF_Initialize_Claim_Record: Generated claim ID = &quot; + out_ClaimId]" />
+    <If Condition="[Not String.IsNullOrEmpty(in_ClaimFolderPath)]" DisplayName="STEP 8 — Validate Required Documents" sap2010:WorkflowViewState.IdRef="If_3">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Sequence DisplayName="Document Validation" sap2010:WorkflowViewState.IdRef="Sequence_3">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="Get Policy Files" sap2010:WorkflowViewState.IdRef="Assign_8">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Object">[policyFiles]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Object">[System.IO.Directory.GetFiles(in_ClaimFolderPath, "*policy*")]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Set Policy Flag" sap2010:WorkflowViewState.IdRef="Assign_9">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[isPolicyAvailable]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[DirectCast(policyFiles, String()).Length &gt; 0]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Set Out Policy Flag" sap2010:WorkflowViewState.IdRef="Assign_10">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_IsPolicyDocumentAvailable]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[isPolicyAvailable]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:LogMessage DisplayName="Log Policy Check" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;WF_Initialize_Claim_Record: [MANDATORY] Policy document available = &quot; + isPolicyAvailable.ToString() + &quot; | Count = &quot; + DirectCast(policyFiles, String()).Length.ToString()]" />
+          <Assign DisplayName="Detect Policy Category" sap2010:WorkflowViewState.IdRef="Assign_11">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[policyCategory]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(Not isPolicyAvailable, "Unknown", If(DirectCast(policyFiles, String()).Any(Function(f) System.IO.Path.GetFileName(f).ToLower().Contains("health") OrElse System.IO.Path.GetFileName(f).ToLower().Contains("medical") OrElse System.IO.Path.GetFileName(f).ToLower().Contains("hospital")), "Healthcare", If(DirectCast(policyFiles, String()).Any(Function(f) System.IO.Path.GetFileName(f).ToLower().Contains("vehicle") OrElse System.IO.Path.GetFileName(f).ToLower().Contains("motor") OrElse System.IO.Path.GetFileName(f).ToLower().Contains("car") OrElse System.IO.Path.GetFileName(f).ToLower().Contains("auto")), "Vehicle/Motor", If(DirectCast(policyFiles, String()).Any(Function(f) System.IO.Path.GetFileName(f).ToLower().Contains("travel") OrElse System.IO.Path.GetFileName(f).ToLower().Contains("trip") OrElse System.IO.Path.GetFileName(f).ToLower().Contains("flight")), "Travel", "Unknown"))))]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Set Out Policy Category" sap2010:WorkflowViewState.IdRef="Assign_12">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_PolicyCategory]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[policyCategory]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:LogMessage DisplayName="Log Policy Category" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;WF_Initialize_Claim_Record: Policy category detected = &quot; + policyCategory]" />
+          <Assign DisplayName="Get ID Files" sap2010:WorkflowViewState.IdRef="Assign_13">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Object">[idFiles]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Object">[System.IO.Directory.GetFiles(in_ClaimFolderPath).Where(Function(f) f.ToLower().Contains("aadhar") OrElse f.ToLower().Contains("pan") OrElse f.ToLower().Contains("passport") OrElse f.ToLower().Contains("license") OrElse f.ToLower().Contains("id") OrElse f.ToLower().Contains("voter")).ToArray()]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Set ID Flag" sap2010:WorkflowViewState.IdRef="Assign_14">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[isIdAvailable]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[DirectCast(idFiles, String()).Length &gt; 0]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Set Out ID Flag" sap2010:WorkflowViewState.IdRef="Assign_15">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_IsIdProofAvailable]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[isIdAvailable]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:LogMessage DisplayName="Log ID Check" sap2010:WorkflowViewState.IdRef="LogMessage_4" Level="Info" Message="[&quot;WF_Initialize_Claim_Record: [MANDATORY] ID proof available = &quot; + isIdAvailable.ToString() + &quot; | Count = &quot; + DirectCast(idFiles, String()).Length.ToString()]" />
+          <Assign DisplayName="Compute Mandatory Check" sap2010:WorkflowViewState.IdRef="Assign_16">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[areAllMandatoryAvailable]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[isPolicyAvailable AndAlso isIdAvailable]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Set Out Mandatory Flag" sap2010:WorkflowViewState.IdRef="Assign_17">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_AreAllMandatoryDocumentsAvailable]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[areAllMandatoryAvailable]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:LogMessage DisplayName="Log Mandatory Result" sap2010:WorkflowViewState.IdRef="LogMessage_5" Level="Info" Message="[&quot;WF_Initialize_Claim_Record: [MANDATORY] All mandatory documents (Policy + ID) available = &quot; + areAllMandatoryAvailable.ToString()]" />
+        </Sequence>
+      </If.Then>
+      <If.Else>
+        <Sequence DisplayName="No Folder - Docs Not Available" sap2010:WorkflowViewState.IdRef="Sequence_4">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="Set All Flags False" sap2010:WorkflowViewState.IdRef="Assign_18">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_IsPolicyDocumentAvailable]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Set Policy Category Unknown" sap2010:WorkflowViewState.IdRef="Assign_19">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_PolicyCategory]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">["Unknown"]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Set ID False" sap2010:WorkflowViewState.IdRef="Assign_20">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_IsIdProofAvailable]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Set Mandatory False" sap2010:WorkflowViewState.IdRef="Assign_21">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_AreAllMandatoryDocumentsAvailable]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:LogMessage DisplayName="Log No Docs" sap2010:WorkflowViewState.IdRef="LogMessage_6" Level="Warn" Message="[&quot;WF_Initialize_Claim_Record: No claim folder provided - all document checks skipped&quot;]" />
+        </Sequence>
+      </If.Else>
+    </If>
+    <If Condition="[Not String.IsNullOrEmpty(in_ClaimFolderPath)]" DisplayName="STEP 9 - Audit Log" sap2010:WorkflowViewState.IdRef="If_4">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Sequence DisplayName="Write Audit" sap2010:WorkflowViewState.IdRef="Sequence_5">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="Build Audit File Path" sap2010:WorkflowViewState.IdRef="Assign_22">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[auditFilePath]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[System.IO.Path.Combine(in_ClaimFolderPath, System.IO.Path.GetFileName(in_ClaimFolderPath) + ".txt")]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="Build Audit Entry" sap2010:WorkflowViewState.IdRef="Assign_23">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[auditEntry]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">["------------------------------------------" + Environment.NewLine + "WF_Initialize_Claim_Record" + Environment.NewLine + "------------------------------------------" + Environment.NewLine + "in_ClaimFolderPath : " + in_ClaimFolderPath + Environment.NewLine + "out_ClaimId : " + out_ClaimId + Environment.NewLine + "out_PolicyCategory : " + out_PolicyCategory + Environment.NewLine + "out_AreAllMandatoryDocumentsAvailable : " + out_AreAllMandatoryDocumentsAvailable.ToString() + Environment.NewLine + " [MANDATORY] out_IsPolicyDocumentAvailable : " + out_IsPolicyDocumentAvailable.ToString() + Environment.NewLine + " [MANDATORY] out_IsIdProofAvailable : " + out_IsIdProofAvailable.ToString() + Environment.NewLine + "timestamp : " + Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine + Environment.NewLine]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <TryCatch DisplayName="TryCatch - Write Audit" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+            <TryCatch.Try>
+              <InvokeMethod DisplayName="Append Audit Entry" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" MethodName="AppendAllText" TargetType="si:File">
+                <InArgument x:TypeArguments="x:String">[auditFilePath]</InArgument>
+                <InArgument x:TypeArguments="x:String">[auditEntry]</InArgument>
+              </InvokeMethod>
+            </TryCatch.Try>
+            <TryCatch.Catches>
+              <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_1">
+                <ActivityAction x:TypeArguments="s:Exception">
+                  <ActivityAction.Argument>
+                    <DelegateInArgument x:TypeArguments="s:Exception" Name="auditEx" />
+                  </ActivityAction.Argument>
+                  <Sequence DisplayName="Audit Write Failed - Ignore" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <ui:LogMessage DisplayName="Log Audit Write Error" sap2010:WorkflowViewState.IdRef="LogMessage_7" Level="Warn" Message="[&quot;WF_Initialize_Claim_Record] Audit write failed: &quot; + auditEx.Message]" />
+                  </Sequence>
+                </ActivityAction>
+              </Catch>
+            </TryCatch.Catches>
+          </TryCatch>
+        </Sequence>
+      </If.Then>
+    </If>
+  </Sequence>
+</Activity>

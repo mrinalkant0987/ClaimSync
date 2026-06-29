@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:uipath="http://uipath.org/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="x-uipath-initial-diagram" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="UiPath Studio Web (https://uipath.com)" exporterVersion="62730eb0">
+  <bpmn:process id="Process_1" name="Process" isExecutable="true">
+    <bpmn:documentation>Claim Settlement Process</bpmn:documentation>
+    <bpmn:extensionElements>
+      <uipath:variables version="v1">
+        <uipath:inputOutput id="Var_ClaimId" name="ClaimId" type="string" />
+        <uipath:inputOutput id="Var_ClaimFolderPath" name="ClaimFolderPath" type="string" />
+        <uipath:inputOutput id="Var_SubmissionValid" name="SubmissionValid" type="boolean" />
+        <uipath:inputOutput id="Var_DocTextBundle" name="DocTextBundle" type="string" />
+        <uipath:inputOutput id="Var_ExtractionNotes" name="ExtractionNotes" type="string" />
+        <uipath:inputOutput id="Var_ExtractedData" name="ExtractedData" type="string" />
+        <uipath:inputOutput id="Var_KnowledgeBundle" name="KnowledgeBundle" type="string" />
+        <uipath:inputOutput id="Var_KnowledgeQualityHint" name="KnowledgeQualityHint" type="string" />
+        <uipath:inputOutput id="Var_DocRequestCount" name="DocRequestCount" type="number" />
+        <uipath:inputOutput id="Var_AnalysisResult" name="AnalysisResult" type="string" />
+        <uipath:inputOutput id="Var_DocumentsComplete" name="DocumentsComplete" type="boolean" />
+        <uipath:inputOutput id="Var_Category" name="Category" type="string" />
+        <uipath:inputOutput id="Var_ValidationResults" name="ValidationResults" type="string" />
+        <uipath:inputOutput id="Var_FraudRiskResult" name="FraudRiskResult" type="string" />
+        <uipath:inputOutput id="Var_FraudRiskLevel" name="FraudRiskLevel" type="string" />
+        <uipath:inputOutput id="Var_HITLOutcome" name="HITLOutcome" type="string" />
+        <uipath:inputOutput id="Var_DecisionResult" name="DecisionResult" type="string" />
+        <uipath:inputOutput id="Var_FinalSummaryResult" name="FinalSummaryResult" type="string" />
+        <uipath:inputOutput id="Var_JobResponse" name="JobResponse" type="string" />
+      </uipath:variables>
+      <uipath:bindings version="v1">
+        <uipath:binding id="Bind_Analysis_Name" default="AG_Claim_Analysis_Core" resource="process" propertyAttribute="name" />
+        <uipath:binding id="Bind_Analysis_Folder" default="mrinal.kant@infosys.com&#39;s workspace/Debug_Solution" resource="process" propertyAttribute="folderPath" />
+        <uipath:binding id="Bind_Fraud_Name" default="AG_Fraud_Risk" resource="process" propertyAttribute="name" />
+        <uipath:binding id="Bind_Fraud_Folder" default="" resource="process" propertyAttribute="folderPath" />
+        <uipath:binding id="Bind_Decision_Name" default="AG_Decision_Support" resource="process" propertyAttribute="name" />
+        <uipath:binding id="Bind_Decision_Folder" default="" resource="process" propertyAttribute="folderPath" />
+        <uipath:binding id="Bind_Final_Name" default="AG_Final_Summary" resource="process" propertyAttribute="name" />
+        <uipath:binding id="Bind_Final_Folder" default="" resource="process" propertyAttribute="folderPath" />
+      </uipath:bindings>
+      <uipath:migrationVersion version="15" />
+      <uipath:intsvcActivityConfig version="v2" />
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="Event_start" name="Start event">
+      <bpmn:extensionElements>
+        <uipath:entryPointId value="e33dd2dc-5fb2-4332-b458-ca30f5adef63" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_start_to_monitor</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_WF_Monitor" name="WF_Monitor_Claim_Intake">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="releaseKey" value="" />
+            <uipath:input name="folderId" value="" />
+            <uipath:input name="folderPath" value="" />
+            <uipath:input name="name" value="WF_Monitor_Claim_Intake" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_JobResponse" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_start_to_monitor</bpmn:incoming>
+      <bpmn:outgoing>Flow_monitor_to_initjoin</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gw_InitJoin" name="Intake Join" default="Flow_initjoin_to_init">
+      <bpmn:incoming>Flow_monitor_to_initjoin</bpmn:incoming>
+      <bpmn:incoming>Flow_hitl_sub_to_initjoin</bpmn:incoming>
+      <bpmn:outgoing>Flow_initjoin_to_init</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_WF_Initialize" name="WF_Initialize_Claim_Record">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="releaseKey" value="" />
+            <uipath:input name="folderId" value="" />
+            <uipath:input name="folderPath" value="" />
+            <uipath:input name="name" value="WF_Initialize_Claim_Record" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_JobResponse" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_initjoin_to_init</bpmn:incoming>
+      <bpmn:outgoing>Flow_init_to_subgw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gw_SubmissionValid" name="Submission Valid?" default="Flow_valid_true">
+      <bpmn:incoming>Flow_init_to_subgw</bpmn:incoming>
+      <bpmn:outgoing>Flow_valid_true</bpmn:outgoing>
+      <bpmn:outgoing>Flow_valid_false</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_WF_Extract" name="WF_Read_And_Extract_Document_Text">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="releaseKey" value="" />
+            <uipath:input name="folderId" value="" />
+            <uipath:input name="folderPath" value="" />
+            <uipath:input name="name" value="WF_Read_And_Extract_Document_Text" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_JobResponse" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_valid_true</bpmn:incoming>
+      <bpmn:outgoing>Flow_extract_to_analysisjoin</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gw_AnalysisJoin" name="Analysis Join">
+      <bpmn:incoming>Flow_extract_to_analysisjoin</bpmn:incoming>
+      <bpmn:incoming>Flow_max_ok</bpmn:incoming>
+      <bpmn:incoming>Flow_reset_to_analysisjoin</bpmn:incoming>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_AG_Analysis" name="AG_Claim_Analysis_Core">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartAgentJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="name" value="=bindings.Bind_Analysis_Name" />
+            <uipath:input name="folderPath" value="=bindings.Bind_Analysis_Folder" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"claim_id":{"type":"string"},"document_text_bundle":{"type":"string"},"extraction_notes":{"type":"string"},"knowledge_bundle":{"type":"string"},"knowledge_quality_hint":{"type":"string"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="JobArguments" type="json" target="bodyField"><![CDATA[{"claim_id":"=vars.Var_ClaimId","document_text_bundle":"=vars.Var_DocTextBundle","extraction_notes":"=vars.Var_ExtractionNotes","knowledge_bundle":"=js: (function(){try{var r=JSON.parse(vars.Var_JobResponse||'{}');return r.out_knowledge_bundle||'';}catch(e){return'';}})()","knowledge_quality_hint":"=js: (function(){try{var r=JSON.parse(vars.Var_JobResponse||'{}');return r.out_knowledge_quality_hint||'KNOWLEDGE_LOAD_FAILED';}catch(e){return'KNOWLEDGE_LOAD_FAILED';}})()"}]]></uipath:input>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_AnalysisResult" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_analysis_to_docsgw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gw_DocsComplete" name="Documents Complete?" default="Flow_docs_true">
+      <bpmn:incoming>Flow_analysis_to_docsgw</bpmn:incoming>
+      <bpmn:outgoing>Flow_docs_true</bpmn:outgoing>
+      <bpmn:outgoing>Flow_docs_false</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_WF_SendMissing" name="WF_Send_Missing_Document_Request">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="releaseKey" value="" />
+            <uipath:input name="folderId" value="" />
+            <uipath:input name="folderPath" value="" />
+            <uipath:input name="name" value="WF_Send_Missing_Document_Request" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_JobResponse" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_docs_false</bpmn:incoming>
+      <bpmn:outgoing>Flow_sendmissing_to_increment</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="Task_IncrementDocCount" name="Increment Doc Request Count" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.Variables" version="v1" />
+          <uipath:context>
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"args":{"type":"string"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"args":null}]]></uipath:input>
+          <uipath:output name="DocRequestCount" type="number" source="=result.response" var="Var_DocRequestCount" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_sendmissing_to_increment</bpmn:incoming>
+      <bpmn:outgoing>Flow_increment_to_maxgw</bpmn:outgoing>
+      <bpmn:script><![CDATA[return { response: (docRequestCount || 0) + 1 };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="Gw_MaxAttempts" name="Max Attempts?" default="Flow_max_ok">
+      <bpmn:incoming>Flow_increment_to_maxgw</bpmn:incoming>
+      <bpmn:outgoing>Flow_max_exceeded</bpmn:outgoing>
+      <bpmn:outgoing>Flow_max_ok</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_HITL_DocEscalation" name="HITL Document Escalation">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Actions.HITL" version="v1" />
+          <uipath:context>
+            <uipath:input name="appId" value="" />
+            <uipath:input name="appVersion" value="" />
+            <uipath:input name="actions" value="" />
+            <uipath:input name="key" value="" />
+            <uipath:input name="taskTitle" value="Document Escalation - Max Attempts Reached" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Actions.HITL" var="Var_JobResponse" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_max_exceeded</bpmn:incoming>
+      <bpmn:outgoing>Flow_docescalation_to_validjoin</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gw_ValidationsJoin" name="Validations Join" default="Flow_validjoin_to_validations">
+      <bpmn:incoming>Flow_docs_true</bpmn:incoming>
+      <bpmn:incoming>Flow_docescalation_to_validjoin</bpmn:incoming>
+      <bpmn:outgoing>Flow_validjoin_to_validations</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_WF_Validations" name="WF_Run_Business_Validations">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="releaseKey" value="" />
+            <uipath:input name="folderId" value="" />
+            <uipath:input name="folderPath" value="" />
+            <uipath:input name="name" value="WF_Run_Business_Validations" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_ValidationResults" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_validjoin_to_validations</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_AG_Fraud" name="AG_Fraud_Risk">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartAgentJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="name" value="=bindings.Bind_Fraud_Name" />
+            <uipath:input name="folderPath" value="=bindings.Bind_Fraud_Folder" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"claim_id":{"type":"string"},"document_text_bundle":{"type":"string"},"claim_category":{"type":"string"},"extracted_data":{"type":"string"},"validationResults":{"type":"string"},"knowledge_bundle":{"type":"string"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="JobArguments" type="json" target="bodyField"><![CDATA[{"claim_id":"=vars.Var_ClaimId","document_text_bundle":"=vars.Var_DocTextBundle","claim_category":"=js: (function(){try{var r=JSON.parse(vars.Var_AnalysisResult||'{}');return r.category||'';}catch(e){return'';}})()","extracted_data":"=vars.Var_ExtractedData","validationResults":"=vars.Var_ValidationResults","knowledge_bundle":"=js: (function(){try{var r=JSON.parse(vars.Var_JobResponse||'{}');return r.out_knowledge_bundle||'';}catch(e){return'';}})()"}]]></uipath:input>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_FraudRiskResult" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gw_RiskLevel" name="Risk Level" default="Flow_risk_low">
+      <bpmn:outgoing>Flow_risk_low</bpmn:outgoing>
+      <bpmn:outgoing>Flow_risk_medium</bpmn:outgoing>
+      <bpmn:outgoing>Flow_risk_high</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_AG_Decision_Low" name="AG_Decision_Support (Low)">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartAgentJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="name" value="=bindings.Bind_Decision_Name" />
+            <uipath:input name="folderPath" value="=bindings.Bind_Decision_Folder" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"claim_id":{"type":"string"},"analysis_result_json":{"type":"string"},"fraud_risk_json":{"type":"string"},"knowledge_bundle":{"type":"string"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="JobArguments" type="json" target="bodyField"><![CDATA[{"claim_id":"=vars.Var_ClaimId","analysis_result_json":"=vars.Var_AnalysisResult","fraud_risk_json":"=vars.Var_FraudRiskResult","knowledge_bundle":"=js: (function(){try{var r=JSON.parse(vars.Var_JobResponse||'{}');return r.out_knowledge_bundle||'';}catch(e){return'';}})()"}]]></uipath:input>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_DecisionResult" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_risk_low</bpmn:incoming>
+      <bpmn:outgoing>Flow_decision_low_to_finaljoin</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gw_FinalSummaryJoin" name="Final Summary Join">
+      <bpmn:incoming>Flow_decision_low_to_finaljoin</bpmn:incoming>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_AG_FinalSummary" name="AG_Final_Summary">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartAgentJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="name" value="=bindings.Bind_Final_Name" />
+            <uipath:input name="folderPath" value="=bindings.Bind_Final_Folder" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"claim_id":{"type":"string"},"final_decision":{"type":"string"},"analysis_result_json":{"type":"string"},"fraud_risk_json":{"type":"string"},"decision_support_json":{"type":"string"},"knowledge_bundle":{"type":"string"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="JobArguments" type="json" target="bodyField"><![CDATA[{"claim_id":"=vars.Var_ClaimId","final_decision":"=vars.Var_HITLOutcome","analysis_result_json":"=vars.Var_AnalysisResult","fraud_risk_json":"=vars.Var_FraudRiskResult","decision_support_json":"=vars.Var_DecisionResult","knowledge_bundle":"=js: (function(){try{var r=JSON.parse(vars.Var_JobResponse||'{}');return r.out_knowledge_bundle||'';}catch(e){return'';}})()"}]]></uipath:input>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_FinalSummaryResult" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_finalsummary_to_update</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_WF_UpdateRecord" name="WF_Update_Claim_Record">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="releaseKey" value="" />
+            <uipath:input name="folderId" value="" />
+            <uipath:input name="folderPath" value="" />
+            <uipath:input name="name" value="WF_Update_Claim_Record" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_JobResponse" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_finalsummary_to_update</bpmn:incoming>
+      <bpmn:outgoing>Flow_update_to_archive</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_WF_Archive" name="WF_Archive_Claim">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="releaseKey" value="" />
+            <uipath:input name="folderId" value="" />
+            <uipath:input name="folderPath" value="" />
+            <uipath:input name="name" value="WF_Archive_Claim" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_JobResponse" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_update_to_archive</bpmn:incoming>
+      <bpmn:outgoing>Flow_archive_to_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_end" name="Claim Settled">
+      <bpmn:incoming>Flow_archive_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Task_HITL_Submission" name="HITL Submission Correction">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Actions.HITL" version="v1" />
+          <uipath:context>
+            <uipath:input name="appId" value="" />
+            <uipath:input name="appVersion" value="" />
+            <uipath:input name="actions" value="" />
+            <uipath:input name="key" value="" />
+            <uipath:input name="taskTitle" value="Submission Correction Required" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Actions.HITL" var="Var_JobResponse" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_valid_false</bpmn:incoming>
+      <bpmn:outgoing>Flow_hitl_sub_to_initjoin</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_AG_Decision_Med" name="AG_Decision_Support (Medium)">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartAgentJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="name" value="=bindings.Bind_Decision_Name" />
+            <uipath:input name="folderPath" value="=bindings.Bind_Decision_Folder" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"claim_id":{"type":"string"},"analysis_result_json":{"type":"string"},"fraud_risk_json":{"type":"string"},"knowledge_bundle":{"type":"string"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="JobArguments" type="json" target="bodyField"><![CDATA[{"claim_id":"=vars.Var_ClaimId","analysis_result_json":"=vars.Var_AnalysisResult","fraud_risk_json":"=vars.Var_FraudRiskResult","knowledge_bundle":"=js: (function(){try{var r=JSON.parse(vars.Var_JobResponse||'{}');return r.out_knowledge_bundle||'';}catch(e){return'';}})()"}]]></uipath:input>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_DecisionResult" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_risk_medium</bpmn:incoming>
+      <bpmn:outgoing>Flow_decision_med_to_reviewer</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_HITL_Reviewer" name="HITL Reviewer Decision">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Actions.HITL" version="v1" />
+          <uipath:context>
+            <uipath:input name="appId" value="" />
+            <uipath:input name="appVersion" value="" />
+            <uipath:input name="actions" value="" />
+            <uipath:input name="key" value="" />
+            <uipath:input name="taskTitle" value="Claims Reviewer Decision Required" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Actions.HITL" var="Var_HITLOutcome" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_decision_med_to_reviewer</bpmn:incoming>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_AG_Decision_High" name="AG_Decision_Support (High)">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartAgentJob" version="v1" />
+          <uipath:context>
+            <uipath:input name="name" value="=bindings.Bind_Decision_Name" />
+            <uipath:input name="folderPath" value="=bindings.Bind_Decision_Folder" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"claim_id":{"type":"string"},"analysis_result_json":{"type":"string"},"fraud_risk_json":{"type":"string"},"knowledge_bundle":{"type":"string"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="JobArguments" type="json" target="bodyField"><![CDATA[{"claim_id":"=vars.Var_ClaimId","analysis_result_json":"=vars.Var_AnalysisResult","fraud_risk_json":"=vars.Var_FraudRiskResult","knowledge_bundle":"=js: (function(){try{var r=JSON.parse(vars.Var_JobResponse||'{}');return r.out_knowledge_bundle||'';}catch(e){return'';}})()"}]]></uipath:input>
+          <uipath:output name="Process response" type="Orchestrator.RunJob" var="Var_DecisionResult" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_risk_high</bpmn:incoming>
+      <bpmn:outgoing>Flow_decision_high_to_fraudspec</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_HITL_FraudSpec" name="HITL Fraud Specialist">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Actions.HITL" version="v1" />
+          <uipath:context>
+            <uipath:input name="appId" value="" />
+            <uipath:input name="appVersion" value="" />
+            <uipath:input name="actions" value="" />
+            <uipath:input name="key" value="" />
+            <uipath:input name="taskTitle" value="Fraud Specialist Review Required" />
+          </uipath:context>
+          <uipath:output name="Process response" type="Actions.HITL" var="Var_HITLOutcome" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_decision_high_to_fraudspec</bpmn:incoming>
+    </bpmn:userTask>
+    <bpmn:scriptTask id="Task_ResetDocCount" name="Reset Doc Request Count" scriptFormat="JavaScript">
+      <bpmn:extensionElements>
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.Variables" version="v1" />
+          <uipath:context>
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"args":{"type":"string"}},"required":[]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="args" type="json" target="bodyField"><![CDATA[{"args":null}]]></uipath:input>
+          <uipath:output name="DocRequestCount" type="number" source="=result.response" var="Var_DocRequestCount" />
+        </uipath:mapping>
+        <uipath:scriptVersion value="v3" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_reset_to_analysisjoin</bpmn:outgoing>
+      <bpmn:script><![CDATA[return { response: 0 };]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_start_to_monitor" sourceRef="Event_start" targetRef="Task_WF_Monitor" />
+    <bpmn:sequenceFlow id="Flow_monitor_to_initjoin" sourceRef="Task_WF_Monitor" targetRef="Gw_InitJoin" />
+    <bpmn:sequenceFlow id="Flow_initjoin_to_init" sourceRef="Gw_InitJoin" targetRef="Task_WF_Initialize" />
+    <bpmn:sequenceFlow id="Flow_init_to_subgw" sourceRef="Task_WF_Initialize" targetRef="Gw_SubmissionValid" />
+    <bpmn:sequenceFlow id="Flow_valid_true" sourceRef="Gw_SubmissionValid" targetRef="Task_WF_Extract" />
+    <bpmn:sequenceFlow id="Flow_extract_to_analysisjoin" sourceRef="Task_WF_Extract" targetRef="Gw_AnalysisJoin" />
+    <bpmn:sequenceFlow id="Flow_analysis_to_docsgw" sourceRef="Task_AG_Analysis" targetRef="Gw_DocsComplete" />
+    <bpmn:sequenceFlow id="Flow_docs_true" sourceRef="Gw_DocsComplete" targetRef="Gw_ValidationsJoin" />
+    <bpmn:sequenceFlow id="Flow_sendmissing_to_increment" sourceRef="Task_WF_SendMissing" targetRef="Task_IncrementDocCount" />
+    <bpmn:sequenceFlow id="Flow_increment_to_maxgw" sourceRef="Task_IncrementDocCount" targetRef="Gw_MaxAttempts" />
+    <bpmn:sequenceFlow id="Flow_max_exceeded" sourceRef="Gw_MaxAttempts" targetRef="Task_HITL_DocEscalation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=js: vars.Var_DocRequestCount &gt;= 3</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_docescalation_to_validjoin" sourceRef="Task_HITL_DocEscalation" targetRef="Gw_ValidationsJoin" />
+    <bpmn:sequenceFlow id="Flow_validjoin_to_validations" sourceRef="Gw_ValidationsJoin" targetRef="Task_WF_Validations" />
+    <bpmn:sequenceFlow id="Flow_risk_low" sourceRef="Gw_RiskLevel" targetRef="Task_AG_Decision_Low" />
+    <bpmn:sequenceFlow id="Flow_decision_low_to_finaljoin" sourceRef="Task_AG_Decision_Low" targetRef="Gw_FinalSummaryJoin" />
+    <bpmn:sequenceFlow id="Flow_finalsummary_to_update" sourceRef="Task_AG_FinalSummary" targetRef="Task_WF_UpdateRecord" />
+    <bpmn:sequenceFlow id="Flow_update_to_archive" sourceRef="Task_WF_UpdateRecord" targetRef="Task_WF_Archive" />
+    <bpmn:sequenceFlow id="Flow_archive_to_end" sourceRef="Task_WF_Archive" targetRef="Event_end" />
+    <bpmn:sequenceFlow id="Flow_valid_false" sourceRef="Gw_SubmissionValid" targetRef="Task_HITL_Submission">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=js: vars.Var_SubmissionValid === false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_hitl_sub_to_initjoin" sourceRef="Task_HITL_Submission" targetRef="Gw_InitJoin" />
+    <bpmn:sequenceFlow id="Flow_docs_false" sourceRef="Gw_DocsComplete" targetRef="Task_WF_SendMissing">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=js: vars.Var_DocumentsComplete === false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_max_ok" sourceRef="Gw_MaxAttempts" targetRef="Gw_AnalysisJoin" />
+    <bpmn:sequenceFlow id="Flow_risk_medium" sourceRef="Gw_RiskLevel" targetRef="Task_AG_Decision_Med">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=js: vars.Var_FraudRiskLevel === "medium"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_decision_med_to_reviewer" sourceRef="Task_AG_Decision_Med" targetRef="Task_HITL_Reviewer" />
+    <bpmn:sequenceFlow id="Flow_reviewer_to_outcome" sourceRef="Task_HITL_Reviewer" targetRef="undefined" />
+    <bpmn:sequenceFlow id="Flow_risk_high" sourceRef="Gw_RiskLevel" targetRef="Task_AG_Decision_High">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=js: vars.Var_FraudRiskLevel === "high"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_decision_high_to_fraudspec" sourceRef="Task_AG_Decision_High" targetRef="Task_HITL_FraudSpec" />
+    <bpmn:sequenceFlow id="Flow_fraudspec_to_outcome" sourceRef="Task_HITL_FraudSpec" targetRef="undefined" />
+    <bpmn:sequenceFlow id="Flow_outcome_proceed" sourceRef="undefined" targetRef="Gw_FinalSummaryJoin" />
+    <bpmn:sequenceFlow id="Flow_outcome_rework" sourceRef="undefined" targetRef="Task_ResetDocCount">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=js: vars.Var_HITLOutcome === "returned_for_rework"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_reset_to_analysisjoin" sourceRef="Task_ResetDocCount" targetRef="Gw_AnalysisJoin" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="S_Event_start" bpmnElement="Event_start">
+        <dc:Bounds x="846" y="786.3333333333333" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="846" y="827.3333333333333" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_WF_Monitor" bpmnElement="Task_WF_Monitor">
+        <dc:Bounds x="932" y="764.3333333333333" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="932" y="849.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_InitJoin" bpmnElement="Gw_InitJoin">
+        <dc:Bounds x="1125.3333333333335" y="770.9999999999999" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1125.3333333333335" y="825.9999999999999" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_WF_Initialize" bpmnElement="Task_WF_Initialize">
+        <dc:Bounds x="1272" y="742.6666666666666" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1272" y="827.6666666666666" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_SubmissionValid" bpmnElement="Gw_SubmissionValid">
+        <dc:Bounds x="832" y="598.3333333333333" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="832" y="653.3333333333333" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_WF_Extract" bpmnElement="Task_WF_Extract">
+        <dc:Bounds x="932" y="533.3333333333333" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="932" y="618.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_AnalysisJoin" bpmnElement="Gw_AnalysisJoin">
+        <dc:Bounds x="1102" y="535.8333333333333" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1102" y="590.8333333333333" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_AG_Analysis" bpmnElement="Task_AG_Analysis">
+        <dc:Bounds x="252" y="322" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="252" y="407" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_DocsComplete" bpmnElement="Gw_DocsComplete">
+        <dc:Bounds x="468.66666666666663" y="337" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="468.66666666666663" y="392" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_WF_SendMissing" bpmnElement="Task_WF_SendMissing">
+        <dc:Bounds x="592" y="330.33333333333326" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="592" y="415.33333333333326" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_IncrementDocCount" bpmnElement="Task_IncrementDocCount">
+        <dc:Bounds x="762" y="330.33333333333326" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="762" y="415.33333333333326" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_MaxAttempts" bpmnElement="Gw_MaxAttempts">
+        <dc:Bounds x="978.6666666666666" y="345.3333333333333" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="978.6666666666666" y="400.3333333333333" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_HITL_DocEscalation" bpmnElement="Task_HITL_DocEscalation">
+        <dc:Bounds x="1102" y="322" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1102" y="407" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_ValidationsJoin" bpmnElement="Gw_ValidationsJoin">
+        <dc:Bounds x="1295.3333333333333" y="328.66666666666663" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1295.3333333333333" y="383.66666666666663" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_WF_Validations" bpmnElement="Task_WF_Validations">
+        <dc:Bounds x="1442" y="313.66666666666663" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1442" y="398.66666666666663" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_AG_Fraud" bpmnElement="Task_AG_Fraud">
+        <dc:Bounds x="252" y="192" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="252" y="277" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_RiskLevel" bpmnElement="Gw_RiskLevel">
+        <dc:Bounds x="322" y="605.3333333333333" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="322" y="660.3333333333333" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_AG_Decision_Low" bpmnElement="Task_AG_Decision_Low">
+        <dc:Bounds x="422" y="590.3333333333333" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="422" y="675.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Gw_FinalSummaryJoin" bpmnElement="Gw_FinalSummaryJoin">
+        <dc:Bounds x="592" y="605.3333333333333" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="592" y="660.3333333333333" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_AG_FinalSummary" bpmnElement="Task_AG_FinalSummary">
+        <dc:Bounds x="252" y="850.3333333333333" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="252" y="935.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_WF_UpdateRecord" bpmnElement="Task_WF_UpdateRecord">
+        <dc:Bounds x="422" y="850.3333333333333" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="422" y="935.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_WF_Archive" bpmnElement="Task_WF_Archive">
+        <dc:Bounds x="592" y="850.3333333333333" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="592" y="935.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Event_end" bpmnElement="Event_end">
+        <dc:Bounds x="762" y="872.3333333333333" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="762" y="913.3333333333333" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_HITL_Submission" bpmnElement="Task_HITL_Submission">
+        <dc:Bounds x="932" y="634.3333333333333" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="932" y="719.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_AG_Decision_Med" bpmnElement="Task_AG_Decision_Med">
+        <dc:Bounds x="422" y="720.3333333333333" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="422" y="805.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_HITL_Reviewer" bpmnElement="Task_HITL_Reviewer">
+        <dc:Bounds x="592" y="720.3333333333333" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="592" y="805.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_AG_Decision_High" bpmnElement="Task_AG_Decision_High">
+        <dc:Bounds x="422" y="460.33333333333326" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="422" y="545.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_HITL_FraudSpec" bpmnElement="Task_HITL_FraudSpec">
+        <dc:Bounds x="592" y="460.33333333333326" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="592" y="545.3333333333333" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Task_ResetDocCount" bpmnElement="Task_ResetDocCount">
+        <dc:Bounds x="932" y="215.33333333333326" width="120" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="932" y="300.33333333333326" width="120" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_start_to_monitor" bpmnElement="Flow_start_to_monitor">
+        <di:waypoint x="882" y="804.3333333333333" />
+        <di:waypoint x="932" y="804.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_monitor_to_initjoin" bpmnElement="Flow_monitor_to_initjoin">
+        <di:waypoint x="1052" y="804.3333333333333" />
+        <di:waypoint x="1088.6666666666667" y="804.3333333333333" />
+        <di:waypoint x="1088.6666666666667" y="795.9999999999999" />
+        <di:waypoint x="1125.3333333333335" y="795.9999999999999" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_initjoin_to_init" bpmnElement="Flow_initjoin_to_init">
+        <di:waypoint x="1175.3333333333335" y="795.9999999999999" />
+        <di:waypoint x="1223.6666666666667" y="795.9999999999999" />
+        <di:waypoint x="1223.6666666666667" y="782.6666666666666" />
+        <di:waypoint x="1272" y="782.6666666666666" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_init_to_subgw" bpmnElement="Flow_init_to_subgw">
+        <di:waypoint x="1392" y="782.6666666666666" />
+        <di:waypoint x="1412" y="782.6666666666666" />
+        <di:waypoint x="1412" y="703" />
+        <di:waypoint x="812" y="703" />
+        <di:waypoint x="812" y="623.3333333333333" />
+        <di:waypoint x="832" y="623.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_valid_true" bpmnElement="Flow_valid_true">
+        <di:waypoint x="882" y="623.3333333333333" />
+        <di:waypoint x="907" y="623.3333333333333" />
+        <di:waypoint x="907" y="573.3333333333333" />
+        <di:waypoint x="932" y="573.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_extract_to_analysisjoin" bpmnElement="Flow_extract_to_analysisjoin">
+        <di:waypoint x="1052" y="573.3333333333333" />
+        <di:waypoint x="1077" y="573.3333333333333" />
+        <di:waypoint x="1077" y="560.8333333333333" />
+        <di:waypoint x="1102" y="560.8333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_analysis_to_docsgw" bpmnElement="Flow_analysis_to_docsgw">
+        <di:waypoint x="372" y="362" />
+        <di:waypoint x="468.66666666666663" y="362" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_docs_true" bpmnElement="Flow_docs_true">
+        <di:waypoint x="518.6666666666666" y="362" />
+        <di:waypoint x="907" y="362" />
+        <di:waypoint x="907" y="353.66666666666663" />
+        <di:waypoint x="1295.3333333333333" y="353.66666666666663" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_sendmissing_to_increment" bpmnElement="Flow_sendmissing_to_increment">
+        <di:waypoint x="712" y="370.33333333333326" />
+        <di:waypoint x="762" y="370.33333333333326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_increment_to_maxgw" bpmnElement="Flow_increment_to_maxgw">
+        <di:waypoint x="882" y="370.33333333333326" />
+        <di:waypoint x="978.6666666666666" y="370.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_max_exceeded" bpmnElement="Flow_max_exceeded">
+        <di:waypoint x="1028.6666666666665" y="370.3333333333333" />
+        <di:waypoint x="1065.3333333333333" y="370.3333333333333" />
+        <di:waypoint x="1065.3333333333333" y="362" />
+        <di:waypoint x="1102" y="362" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_docescalation_to_validjoin" bpmnElement="Flow_docescalation_to_validjoin">
+        <di:waypoint x="1222" y="362" />
+        <di:waypoint x="1258.6666666666665" y="362" />
+        <di:waypoint x="1258.6666666666665" y="353.66666666666663" />
+        <di:waypoint x="1295.3333333333333" y="353.66666666666663" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_validjoin_to_validations" bpmnElement="Flow_validjoin_to_validations">
+        <di:waypoint x="1345.3333333333333" y="353.66666666666663" />
+        <di:waypoint x="1442" y="353.66666666666663" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_risk_low" bpmnElement="Flow_risk_low">
+        <di:waypoint x="372" y="630.3333333333333" />
+        <di:waypoint x="422" y="630.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_decision_low_to_finaljoin" bpmnElement="Flow_decision_low_to_finaljoin">
+        <di:waypoint x="542" y="630.3333333333333" />
+        <di:waypoint x="592" y="630.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_finalsummary_to_update" bpmnElement="Flow_finalsummary_to_update">
+        <di:waypoint x="372" y="890.3333333333333" />
+        <di:waypoint x="422" y="890.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_update_to_archive" bpmnElement="Flow_update_to_archive">
+        <di:waypoint x="542" y="890.3333333333333" />
+        <di:waypoint x="592" y="890.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_archive_to_end" bpmnElement="Flow_archive_to_end">
+        <di:waypoint x="712" y="890.3333333333333" />
+        <di:waypoint x="762" y="890.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_valid_false" bpmnElement="Flow_valid_false">
+        <di:waypoint x="882" y="623.3333333333333" />
+        <di:waypoint x="907" y="623.3333333333333" />
+        <di:waypoint x="907" y="674.3333333333333" />
+        <di:waypoint x="932" y="674.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_hitl_sub_to_initjoin" bpmnElement="Flow_hitl_sub_to_initjoin">
+        <di:waypoint x="1052" y="674.3333333333333" />
+        <di:waypoint x="1088.6666666666667" y="674.3333333333333" />
+        <di:waypoint x="1088.6666666666667" y="795.9999999999999" />
+        <di:waypoint x="1125.3333333333335" y="795.9999999999999" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_docs_false" bpmnElement="Flow_docs_false">
+        <di:waypoint x="518.6666666666666" y="362" />
+        <di:waypoint x="555.3333333333333" y="362" />
+        <di:waypoint x="555.3333333333333" y="370.33333333333326" />
+        <di:waypoint x="592" y="370.33333333333326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_max_ok" bpmnElement="Flow_max_ok">
+        <di:waypoint x="1028.6666666666665" y="370.3333333333333" />
+        <di:waypoint x="1065.3333333333333" y="370.3333333333333" />
+        <di:waypoint x="1065.3333333333333" y="560.8333333333333" />
+        <di:waypoint x="1102" y="560.8333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_risk_medium" bpmnElement="Flow_risk_medium">
+        <di:waypoint x="372" y="630.3333333333333" />
+        <di:waypoint x="397" y="630.3333333333333" />
+        <di:waypoint x="397" y="760.3333333333333" />
+        <di:waypoint x="422" y="760.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_decision_med_to_reviewer" bpmnElement="Flow_decision_med_to_reviewer">
+        <di:waypoint x="542" y="760.3333333333333" />
+        <di:waypoint x="592" y="760.3333333333333" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_reviewer_to_outcome" bpmnElement="Flow_reviewer_to_outcome" />
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_risk_high" bpmnElement="Flow_risk_high">
+        <di:waypoint x="372" y="630.3333333333333" />
+        <di:waypoint x="397" y="630.3333333333333" />
+        <di:waypoint x="397" y="500.33333333333326" />
+        <di:waypoint x="422" y="500.33333333333326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_decision_high_to_fraudspec" bpmnElement="Flow_decision_high_to_fraudspec">
+        <di:waypoint x="542" y="500.33333333333326" />
+        <di:waypoint x="592" y="500.33333333333326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_fraudspec_to_outcome" bpmnElement="Flow_fraudspec_to_outcome" />
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_outcome_proceed" bpmnElement="Flow_outcome_proceed" />
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_outcome_rework" bpmnElement="Flow_outcome_rework" />
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_reset_to_analysisjoin" bpmnElement="Flow_reset_to_analysisjoin">
+        <di:waypoint x="1052" y="255.33333333333326" />
+        <di:waypoint x="1077" y="255.33333333333326" />
+        <di:waypoint x="1077" y="560.8333333333333" />
+        <di:waypoint x="1102" y="560.8333333333333" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

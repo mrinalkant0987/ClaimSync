@@ -1,0 +1,33 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "Main.xaml",
+      "uniqueId": "a8719c4d-be60-446b-9eab-a2525d80acd3",
+      "type": "Process",
+      "input": {
+        "type": "object",
+        "properties": {
+          "in_rootFolderPath": {
+            "type": "string",
+            "x-default-expression": "\"C:\\Users\\USER\\Documents\\Hackathon\\Test_Claims\"",
+            "default": "C:\\Users\\USER\\Documents\\Hackathon\\Test_Claims"
+          }
+        },
+        "required": []
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "out_claimFolderPath": {
+            "type": "string"
+          },
+          "out_claimId": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

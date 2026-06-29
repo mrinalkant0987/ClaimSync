@@ -1,0 +1,6 @@
+{
+  "ProjectType": "Process",
+  "Name": "WF_Monitor_Claim_Intake",
+  "Description": null,
+  "MainFile": "Main.xaml"
+}

@@ -1,0 +1,6 @@
+{
+  "ProjectType": "Process",
+  "Name": "WF_Archive_Claim",
+  "Description": null,
+  "MainFile": "Main.xaml"
+}

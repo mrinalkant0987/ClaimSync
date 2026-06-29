@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Claim_Sync",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "894bb6b9-dcda-4e81-b87e-5abde2b37068",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "Claim_Sync",
+      "description": null
+    },
+    "locks": [],
+    "key": "cbf8ec17-86d8-423b-8c99-91f5019a1eaa"
+  }
+}

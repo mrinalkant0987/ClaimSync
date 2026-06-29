@@ -1,0 +1,6 @@
+{
+  "ProjectType": "Process",
+  "Name": "WF_Read_And_Extract_Document_Text",
+  "Description": null,
+  "MainFile": "Main.xaml"
+}

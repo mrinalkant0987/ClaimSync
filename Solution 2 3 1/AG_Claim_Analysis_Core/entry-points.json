@@ -1,0 +1,156 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "type": "agent",
+      "uniqueId": "4da9dd83-2b6c-45b3-9c51-e295e6e3253a",
+      "input": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "document_text_bundle",
+          "knowledge_bundle",
+          "knowledge_quality_hint"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "description": "Unique claim identifier for traceability."
+          },
+          "document_text_bundle": {
+            "type": "string",
+            "description": "Combined extracted text from all claim documents. Primary evidence source for classification and fact extraction."
+          },
+          "extraction_notes": {
+            "type": "string",
+            "description": "Extraction quality notes from WF_Read_And_Extract_Document_Text. May include OCR-FAIL, EMPTY-TEXT, UNSUPPORTED, EmptyOrSkipped>0."
+          },
+          "knowledge_bundle": {
+            "type": "string",
+            "description": "Knowledge base content for claim analysis. Must be read FIRST. If empty or under 50 chars, apply built-in defaults and cap confidence at 0.60."
+          },
+          "knowledge_quality_hint": {
+            "type": "string",
+            "description": "KB load status: KNOWLEDGE_LOAD_OK, KNOWLEDGE_LOAD_PARTIAL, KNOWLEDGE_LOAD_FAILED."
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "category",
+          "category_confidence",
+          "eligible",
+          "eligibility_reason",
+          "documents_complete",
+          "missing_documents",
+          "request_message",
+          "claim_summary",
+          "key_document_facts",
+          "analysis_confidence",
+          "analysis_core"
+        ],
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Exactly one of: Healthcare, Vehicle, Travel. Never Generic. Determined by document evidence using dual-signal confirmation where possible.",
+            "enum": [
+              "Healthcare",
+              "Vehicle",
+              "Travel"
+            ]
+          },
+          "category_confidence": {
+            "type": "number",
+            "description": "Confidence in category classification, 0.05 to 1.0, rounded to 2 decimal places. Starts at 1.0 and deductions are applied. Hard cap at 0.60 if KB is missing or under 50 chars."
+          },
+          "eligible": {
+            "type": "boolean",
+            "description": "Whether the claim meets basic eligibility criteria based on document content and KB rules."
+          },
+          "eligibility_reason": {
+            "type": "string",
+            "description": "Concise reason why eligible was set true or false. Must reference specific document evidence or KB rule applied."
+          },
+          "documents_complete": {
+            "type": "boolean",
+            "description": "Whether all required documents for the identified category are present and readable in document_text_bundle."
+          },
+          "missing_documents": {
+            "type": "string",
+            "description": "Pipe-separated list of missing required document types. Use empty string if documents_complete is true. Example: Travel insurance certificate|Booking confirmation|Incident report"
+          },
+          "request_message": {
+            "type": "string",
+            "description": "Claimant-friendly message describing which documents are still needed and why. Use empty string if documents_complete is true."
+          },
+          "claim_summary": {
+            "type": "string",
+            "description": "Concise 2-4 sentence claim summary covering category, eligibility, document status, and key facts. Must include KB note if KB was missing or partial. Must include confidence note if analysis_confidence is below 0.50."
+          },
+          "key_document_facts": {
+            "type": "string",
+            "description": "Pipe-separated key facts explicitly found in the documents. Include claim amounts, dates, identifiers, and category-specific facts. Do NOT infer missing values."
+          },
+          "analysis_confidence": {
+            "type": "number",
+            "description": "Overall analysis confidence after all deductions, 0.05 to 1.0, rounded to 2 decimal places. Starts at 1.0. Hard cap at 0.60 if KB missing. Minimum floor 0.05."
+          },
+          "analysis_core": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "description": "Exactly one of: Healthcare, Vehicle, Travel. Never Generic. Determined by document evidence using dual-signal confirmation where possible.",
+                "enum": [
+                  "Healthcare",
+                  "Vehicle",
+                  "Travel"
+                ]
+              },
+              "category_confidence": {
+                "type": "number",
+                "description": "Confidence in category classification, 0.05 to 1.0, rounded to 2 decimal places. Starts at 1.0 and deductions are applied. Hard cap at 0.60 if KB is missing or under 50 chars."
+              },
+              "eligible": {
+                "type": "boolean",
+                "description": "Whether the claim meets basic eligibility criteria based on document content and KB rules."
+              },
+              "eligibility_reason": {
+                "type": "string",
+                "description": "Concise reason why eligible was set true or false. Must reference specific document evidence or KB rule applied."
+              },
+              "documents_complete": {
+                "type": "boolean",
+                "description": "Whether all required documents for the identified category are present and readable in document_text_bundle."
+              },
+              "missing_documents": {
+                "type": "string",
+                "description": "Pipe-separated list of missing required document types. Use empty string if documents_complete is true. Example: Travel insurance certificate|Booking confirmation|Incident report"
+              },
+              "request_message": {
+                "type": "string",
+                "description": "Claimant-friendly message describing which documents are still needed and why. Use empty string if documents_complete is true."
+              },
+              "claim_summary": {
+                "type": "string",
+                "description": "Concise 2-4 sentence claim summary covering category, eligibility, document status, and key facts. Must include KB note if KB was missing or partial. Must include confidence note if analysis_confidence is below 0.50."
+              },
+              "key_document_facts": {
+                "type": "string",
+                "description": "Pipe-separated key facts explicitly found in the documents. Include claim amounts, dates, identifiers, and category-specific facts. Do NOT infer missing values."
+              },
+              "analysis_confidence": {
+                "type": "number",
+                "description": "Overall analysis confidence after all deductions, 0.05 to 1.0, rounded to 2 decimal places. Starts at 1.0. Hard cap at 0.60 if KB missing. Minimum floor 0.05."
+              }
+            }
+          }
+        },
+        "title": "Outputs"
+      }
+    }
+  ]
+}

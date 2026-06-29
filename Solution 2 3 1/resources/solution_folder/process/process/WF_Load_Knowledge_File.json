@@ -1,0 +1,62 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Load_Knowledge_File",
+    "kind": "process",
+    "type": "process",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "c3263e57-9a80-4701-a1b1-576143111768",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "WF_Load_Knowledge_File",
+        "kind": "package"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "entryPointUniqueId": null,
+      "inputArgumentsSchema": null,
+      "outputArgumentsSchema": null,
+      "inputArgumentsSchemaV2": null,
+      "outputArgumentsSchemaV2": null,
+      "type": "Process",
+      "name": "WF_Load_Knowledge_File",
+      "description": null,
+      "package": {
+        "key": "1182fdab-4435-4b91-9982-0e3c7919acf0"
+      },
+      "packageName": "Solution.2.process.WF_Load_Knowledge_File",
+      "packageVersion": null,
+      "entryPointName": null,
+      "inputArguments": null,
+      "jobPriority": "Medium",
+      "hiddenForAttendedUser": false,
+      "alwaysRunning": false,
+      "autoStartProcess": false,
+      "jobRecording": "Disabled",
+      "targetFrameworkValue": "Portable",
+      "duration": 40,
+      "frequency": 500,
+      "quality": 100,
+      "remoteControlAccess": "None",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "retentionBucketRef": null,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180,
+      "staleRetentionBucketRef": null,
+      "entryPoints": "{\r\n  \u0022$schema\u0022: \u0022https://cloud.uipath.com/draft/2024-12/entry-point\u0022,\r\n  \u0022entryPoints\u0022: [\r\n    {\r\n      \u0022filePath\u0022: \u0022Main.xaml\u0022,\r\n      \u0022uniqueId\u0022: \u002223e28263-c8d5-46c6-8036-04fb97c5fa30\u0022,\r\n      \u0022type\u0022: \u0022process\u0022,\r\n      \u0022input\u0022: {\r\n        \u0022type\u0022: \u0022object\u0022,\r\n        \u0022properties\u0022: {\r\n          \u0022in_FilePath\u0022: {\r\n            \u0022type\u0022: \u0022string\u0022,\r\n            \u0022x-default-expression\u0022: \u0022\\\u0022C:\\\\Users\\\\USER\\\\Documents\\\\Hackathon\\\\Knowledge Base\\\\00_Process_Context_and_BRD.docx\\\u0022\u0022,\r\n            \u0022default\u0022: \u0022C:\\\\Users\\\\USER\\\\Documents\\\\Hackathon\\\\Knowledge Base\\\\00_Process_Context_and_BRD.docx\u0022\r\n          }\r\n        },\r\n        \u0022required\u0022: []\r\n      },\r\n      \u0022output\u0022: {\r\n        \u0022type\u0022: \u0022object\u0022,\r\n        \u0022properties\u0022: {\r\n          \u0022out_FileContent\u0022: {\r\n            \u0022type\u0022: \u0022string\u0022\r\n          }\r\n        }\r\n      }\r\n    }\r\n  ]\r\n}",
+      "connections": null,
+      "tags": []
+    },
+    "locks": [],
+    "key": "e2574102-4642-4fe3-b13d-09b6c39465e4"
+  }
+}

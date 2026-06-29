@@ -1,0 +1,38 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "HITLApp",
+    "kind": "appVersion",
+    "apiVersion": "apps.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [
+      {
+        "name": "HITLApp.uiapp",
+        "kind": "appVersion",
+        "url": "https://staging.uipath.com/ddb4530c-67dc-443c-8b3a-c5cc7bfae4dc/apps_/default/api/v1/default/models/IDd34cce9beeb0472eaeab9d6762d46245/publish/versions/2/package",
+        "key": "ID2cff906d97ac49f3b0f8206162caf801"
+      }
+    ],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "HITLApp",
+      "description": "",
+      "appSystemName": "IDd34cce9beeb0472eaeab9d6762d46245",
+      "version": "2.0.0",
+      "isAppPublic": false,
+      "expressionLanguage": "VB",
+      "publishNote": null,
+      "uiappFile": "ID2cff906d97ac49f3b0f8206162caf801",
+      "uiappFileName": "HITLApp.uiapp",
+      "isUnifiedProject": false
+    },
+    "locks": [],
+    "key": "ID2cff906d97ac49f3b0f8206162caf801"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "assemblyStates": {
+    "AG_Claim_Analysis_Co.U5gLC4lJZEP1zrzLMObiqj1": {
+      "namespace": "UiPath.System.Activities.ViewModels.SWEntities.AG_Claim_Analysis_Core__content_agent_json_Input.Bundle",
+      "providerName": "CustomEntities",
+      "key": {
+        "name": "UiPath.System.Activities.ViewModels.SWEntities.AG_Claim_Analysis_Core__content_agent_json_Input",
+        "hash": "eXp2aWJmTm5EbU5UT3g0Uysvb0dlelV2VFdaL3dQdTI3QzdEL3FobzM5ND0",
+        "assemblyName": "AG_Claim_Analysis_Co.U5gLC4lJZEP1zrzLMObiqj1"
+      }
+    },
+    "AG_Claim_Analysis_Co.wL4gW2QgqWR1bwKrSvrd6R1": {
+      "namespace": "UiPath.System.Activities.ViewModels.SWEntities.AG_Claim_Analysis_Core__content_agent_json_Output.Bundle",
+      "providerName": "CustomEntities",
+      "key": {
+        "name": "UiPath.System.Activities.ViewModels.SWEntities.AG_Claim_Analysis_Core__content_agent_json_Output",
+        "hash": "ZjkzSzZ6YjNZbmsrNThCZmtJanV4c3hmQmNCNEhkT3dtb1YvcldldzhyYz0",
+        "assemblyName": "AG_Claim_Analysis_Co.wL4gW2QgqWR1bwKrSvrd6R1"
+      }
+    }
+  }
+}

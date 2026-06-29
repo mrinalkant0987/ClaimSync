@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Read_And_Extract_Document_Text",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "9816ab7e-a0eb-48ac-9e24-835d69aca544",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "WF_Read_And_Extract_Document_Text",
+      "description": null
+    },
+    "locks": [],
+    "key": "609d1207-682a-4e44-9b1e-ceb599cec75b"
+  }
+}

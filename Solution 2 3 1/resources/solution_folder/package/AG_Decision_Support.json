@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "AG_Decision_Support",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "87ac9346-de0a-45e0-bed2-cbe8bd6467a2",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "AG_Decision_Support",
+      "description": null
+    },
+    "locks": [],
+    "key": "798b90b9-7745-4f17-b14f-05b1acf2c7c3"
+  }
+}

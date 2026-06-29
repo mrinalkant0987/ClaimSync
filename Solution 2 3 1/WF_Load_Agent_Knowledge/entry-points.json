@@ -1,0 +1,46 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "Main.xaml",
+      "uniqueId": "73781a92-0eda-419c-a937-ac5cf39f0d24",
+      "type": "Process",
+      "input": {
+        "type": "object",
+        "properties": {
+          "in_AgentName": {
+            "type": "string",
+            "x-default-expression": "\"AG_Claim_Analysis_Core\"",
+            "default": "AG_Claim_Analysis_Core"
+          },
+          "in_KBBasePath": {
+            "type": "string",
+            "x-default-expression": "\"C:\\Users\\USER\\Documents\\Hackathon\\Knowledge Base\\\"",
+            "default": "C:\\Users\\USER\\Documents\\Hackathon\\Knowledge Base\\"
+          },
+          "in_ClaimFolderPath": {
+            "type": "string",
+            "x-default-expression": "\"C:\\Users\\USER\\Documents\\Hackathon\\Test_Claims\\InProgress\\Claim_2026_002_Health\\\"",
+            "default": "C:\\Users\\USER\\Documents\\Hackathon\\Test_Claims\\InProgress\\Claim_2026_002_Health\\"
+          }
+        },
+        "required": []
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "out_KnowledgeBundle": {
+            "type": "string"
+          },
+          "out_KnowledgeLoadStatus": {
+            "type": "string"
+          },
+          "out_KnowledgeQualityHint": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

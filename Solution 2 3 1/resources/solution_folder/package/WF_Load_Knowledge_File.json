@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Load_Knowledge_File",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "c3263e57-9a80-4701-a1b1-576143111768",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "WF_Load_Knowledge_File",
+      "description": null
+    },
+    "locks": [],
+    "key": "1182fdab-4435-4b91-9982-0e3c7919acf0"
+  }
+}

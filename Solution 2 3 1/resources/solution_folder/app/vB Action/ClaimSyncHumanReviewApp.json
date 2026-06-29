@@ -1,0 +1,37 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "ClaimSyncHumanReviewApp",
+    "kind": "app",
+    "type": "vB Action",
+    "apiVersion": "apps.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "ClaimSyncHumanReviewApp",
+        "kind": "appVersion"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "ClaimSyncHumanReviewApp",
+      "description": null,
+      "type": "Regular",
+      "appSystemName": "ID7a9f918d0e434eec9e53663b249c45e7",
+      "version": "1.0.0",
+      "appVersionRef": {
+        "name": "ClaimSyncHumanReviewApp",
+        "key": "IDe086c014b1554a5d986f84cd828d86be"
+      },
+      "actionSchema": "{\u0022version\u0022:1,\u0022key\u0022:\u0022cb3de3cb-6930-46e1-b7ec-bcade7310872\u0022,\u0022__isDeleted\u0022:false,\u0022dateLastModified\u0022:\u00222026-06-29T08:19:17.563Z\u0022,\u0022description\u0022:\u0022Action Schema\u0022,\u0022id\u0022:\u0022IDd733c225cf794366945c4a25f487087e\u0022,\u0022inOuts\u0022:[],\u0022inputs\u0022:[{\u0022name\u0022:\u0022ClaimID\u0022,\u0022description\u0022:\u0022Unique identifier for the insurance claim.\u0022,\u0022required\u0022:true,\u0022type\u0022:\u0022System.String\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022key\u0022:\u0022577942b0-2d77-4df2-91fa-3db398cec63a\u0022},{\u0022name\u0022:\u0022DecisionBrief\u0022,\u0022description\u0022:\u0022A brief summary of the automated system\u0027s decision or recommendation.\u0022,\u0022required\u0022:true,\u0022type\u0022:\u0022System.String\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022key\u0022:\u0022a4528b78-b8d6-46f7-8a07-529bb93971fe\u0022},{\u0022name\u0022:\u0022RecommendedAmount\u0022,\u0022description\u0022:\u0022The amount recommended by the automated system for the claim.\u0022,\u0022required\u0022:false,\u0022type\u0022:\u0022System.Decimal\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022key\u0022:\u002270c70bf1-b32c-4b29-9267-e345cff37047\u0022},{\u0022name\u0022:\u0022Confidence\u0022,\u0022description\u0022:\u0022The confidence level of the automated system\u0027s recommendation.\u0022,\u0022required\u0022:true,\u0022type\u0022:\u0022System.Decimal\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022key\u0022:\u00225a91da52-8659-4c7a-af90-2468a28af14e\u0022},{\u0022name\u0022:\u0022Instructions\u0022,\u0022description\u0022:\u0022Specific instructions for the human reviewer regarding this claim.\u0022,\u0022required\u0022:false,\u0022type\u0022:\u0022System.String\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022key\u0022:\u0022452af169-2fdf-4748-ab9c-6e48ec023617\u0022}],\u0022name\u0022:\u0022ActionSchema\u0022,\u0022outcomes\u0022:[{\u0022name\u0022:\u0022Approved\u0022,\u0022description\u0022:\u0022The claim has been approved by the reviewer.\u0022,\u0022required\u0022:false,\u0022type\u0022:\u0022System.String\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022key\u0022:\u0022038b6cae-1d4c-45b7-a12e-5730687e4875\u0022},{\u0022name\u0022:\u0022Rejected\u0022,\u0022description\u0022:\u0022The claim has been rejected by the reviewer.\u0022,\u0022required\u0022:false,\u0022type\u0022:\u0022System.String\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022key\u0022:\u00225ea65df9-3579-459c-95cc-f00992fb74e7\u0022}],\u0022outputs\u0022:[{\u0022name\u0022:\u0022ReviewerComments\u0022,\u0022description\u0022:\u0022Optional comments provided by the human reviewer.\u0022,\u0022required\u0022:false,\u0022type\u0022:\u0022System.String\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022key\u0022:\u0022e60503c3-16b8-4259-9768-bac3b84ebdba\u0022}],\u0022Description\u0022:\u0022Human review for an insurance claim, allowing the reviewer to approve or reject the claim and add comments.\u0022,\u0022actionSchemaGenerationSource\u0022:\u0022aiAssistedManual\u0022}"
+    },
+    "locks": [],
+    "key": "15fce2f0-2d33-4e8d-8404-763bf207e0a0"
+  }
+}

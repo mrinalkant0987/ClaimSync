@@ -1,0 +1,6 @@
+{
+  "ProjectType": "Process",
+  "Name": "WF_Run_Business_Validations",
+  "Description": null,
+  "MainFile": "Main.xaml"
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "type": "agent",
+      "uniqueId": "0592186d-3c65-4099-b45d-6e3c3f961876",
+      "input": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "document_text_bundle"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "description": "Unique claim identifier (e.g. CLM-20260622-INVOICE-A3F9B1). Required for traceability."
+          },
+          "document_text_bundle": {
+            "type": "string",
+            "description": "Combined extracted text from all claim documents. Each file block starts with [FILE: filename]. Primary evidence corpus for fraud analysis."
+          },
+          "validationResults": {
+            "type": "string",
+            "description": "Pipe-separated BV validation results from WF_Run_Business_Validations. Format: BV-001:PASS:... | BV-003:WARN:... BV-003:WARN = +15 corroborating signal. BV-004:WARN = +30 corroborating signal."
+          },
+          "extracted_data": {
+            "type": "string",
+            "description": "Deterministic parsed fields from documents. Semicolon-separated. Format: amount=45000; date=2026-06-10; identifier=INV-1234. Use for cross-checking declared vs detected values."
+          },
+          "claim_category": {
+            "type": "string",
+            "description": "Claim category from AG_Claim_Analysis_Core. One of: Healthcare, Vehicle, Travel. Used for category-specific fraud signal weighting."
+          },
+          "knowledge_bundle": {
+            "type": "string",
+            "description": "Loaded KB content from WF_Load_Agent_Knowledge for AG_Fraud_Risk. Contains fraud patterns, signal thresholds, historical case baselines. Read BEFORE scoring. If empty, apply built-in scoring logic."
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "fraudRisk"
+        ],
+        "properties": {
+          "fraudRisk": {
+            "type": "object",
+            "description": "Nested fraud risk assessment object. Always present in output.",
+            "required": [
+              "level",
+              "score",
+              "score_confidence",
+              "signals",
+              "corroborating_signals",
+              "reasoning",
+              "recommended_action"
+            ],
+            "properties": {
+              "level": {
+                "type": "string",
+                "description": "Final risk tier. Exactly one of: low, medium, high. Determined by composite score: 0–39=low, 40–69=medium, 70–100=high. Must be lowercase."
+              },
+              "score": {
+                "type": "integer",
+                "description": "Composite fraud risk score 0–100. Sum of all triggered signal weights. Cap at 100."
+              },
+              "score_confidence": {
+                "type": "number",
+                "description": "Confidence in the fraud score accuracy, 0.0–1.0. Based on evidence quality: number of signals detected, document completeness, validationResults completeness, and knowledge_bundle availability. High evidence quality = higher score_confidence. Floor: 0.20. Ceiling: 0.95."
+              },
+              "signals": {
+                "type": "string",
+                "description": "Pipe-separated string of fraud signal codes triggered during analysis. Format: SIGNAL_CODE_1|SIGNAL_CODE_2|SIGNAL_CODE_3. Example: AMOUNT_ANOMALY|DATE_MISMATCH|DOC_SPARSE. Use empty string if no signals triggered. NOT an array — must be a single pipe-separated string."
+              },
+              "corroborating_signals": {
+                "type": "string",
+                "description": "Pipe-separated string of BV validation warnings used as corroborating fraud evidence. Format: BV-003:WARN - document too short|BV-004:WARN - no amount detected. Use empty string if none. NOT an array — must be a single pipe-separated string."
+              },
+              "reasoning": {
+                "type": "string",
+                "description": "Plain-language explanation of the fraud risk determination. 2–5 sentences. Must reference specific evidence from documents. Include score breakdown: e.g. Score: 55 = AMOUNT_ANOMALY(+20) + BV-004:WARN(+30) + DOC_SPARSE(+15). No speculation."
+              },
+              "recommended_action": {
+                "type": "string",
+                "description": "Exactly one of: proceed_to_decision_support, escalate_to_claims_reviewer, escalate_to_fraud_specialist. Must align with level: low=proceed_to_decision_support, medium=escalate_to_claims_reviewer, high=escalate_to_fraud_specialist."
+              }
+            }
+          }
+        },
+        "title": "Outputs"
+      }
+    }
+  ]
+}

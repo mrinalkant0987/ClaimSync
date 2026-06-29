@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Send_Missing_Document_Request",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "90159f97-29ff-41a9-a000-9d16ec5ae8cb",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "WF_Send_Missing_Document_Request",
+      "description": null
+    },
+    "locks": [],
+    "key": "7bc3d838-5677-4542-aebe-38144a0f3315"
+  }
+}

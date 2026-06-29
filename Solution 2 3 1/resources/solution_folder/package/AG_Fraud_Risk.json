@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "AG_Fraud_Risk",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "7b82a5cb-0611-43ee-9ea1-441e45e6d45b",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "AG_Fraud_Risk",
+      "description": null
+    },
+    "locks": [],
+    "key": "6353d939-5777-4ebf-9a08-90e2e933c111"
+  }
+}

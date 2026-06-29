@@ -1,0 +1,48 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "Main.xaml",
+      "uniqueId": "2375df33-621c-4bff-867c-33a3a8b2814f",
+      "type": "Process",
+      "input": {
+        "type": "object",
+        "properties": {
+          "in_ClaimFolderPath": {
+            "type": "string"
+          },
+          "in_ClaimId": {
+            "type": "string"
+          },
+          "in_ExpectedFileTypes": {
+            "type": "string",
+            "x-default-expression": "\"pdf,docx\"",
+            "default": "pdf,docx"
+          }
+        },
+        "required": []
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "out_DocumentTextBundle": {
+            "type": "string"
+          },
+          "out_DocumentNames": {
+            "type": "string"
+          },
+          "out_ExtractedData": {
+            "type": "string"
+          },
+          "out_ExtractionSuccess": {
+            "type": "boolean"
+          },
+          "out_ExtractionNotes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

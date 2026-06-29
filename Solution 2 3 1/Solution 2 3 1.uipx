@@ -1,0 +1,93 @@
+{
+  "DocVersion": "1.0.0",
+  "StudioMinVersion": "2025.04.0",
+  "SolutionId": "c07f16dd-e6a0-4e8e-bd2b-08ded446259e",
+  "Projects": [
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "Request_Missing_Documents_Task/project.uiproj",
+      "Id": "aa659476-22b4-4c27-8f65-15f3059cb61b"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Send_Missing_Document_Request/project.uiproj",
+      "Id": "90159f97-29ff-41a9-a000-9d16ec5ae8cb"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Load_Knowledge_File/project.uiproj",
+      "Id": "c3263e57-9a80-4701-a1b1-576143111768"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "AG_Final_Summary/project.uiproj",
+      "Id": "27999980-bd2e-4538-813f-7d336d90cac0"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "AG_Fraud_Risk/project.uiproj",
+      "Id": "7b82a5cb-0611-43ee-9ea1-441e45e6d45b"
+    },
+    {
+      "Type": "Function",
+      "ProjectRelativePath": "AG_PDF_Extraction/project.uiproj",
+      "Id": "129f3501-6d1c-417f-a807-3ce2316b6759"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Update_Claim_Record/project.uiproj",
+      "Id": "6f8a4b8c-569c-445a-8d65-d3cb8574133f"
+    },
+    {
+      "Type": "ProcessOrchestration",
+      "ProjectRelativePath": "Claim_Sync/project.uiproj",
+      "Id": "894bb6b9-dcda-4e81-b87e-5abde2b37068"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Prepare_Reviewer_Package/project.uiproj",
+      "Id": "1972bbca-6227-40ce-876d-3ca2cd8e2475"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Monitor_Claim_Intake/project.uiproj",
+      "Id": "26f1dbd7-de27-4a60-b1c4-78ecb20e885b"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Load_Agent_Knowledge/project.uiproj",
+      "Id": "a8ec3adc-e229-423c-9039-9ec6150e26ab"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Initialize_Claim_Record/project.uiproj",
+      "Id": "050805b1-8167-4b06-863b-c661828cdbeb"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Archive_Claim/project.uiproj",
+      "Id": "d1ced4c4-08c0-4748-951c-70efd718969c"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Read_And_Extract_Document_Text/project.uiproj",
+      "Id": "9816ab7e-a0eb-48ac-9e24-835d69aca544"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "AG_Claim_Analysis_Core/project.uiproj",
+      "Id": "325579b9-6e9e-4dd5-a44b-27c986979b07"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "WF_Run_Business_Validations/project.uiproj",
+      "Id": "8d09f95f-06f1-4a50-b6e6-8a40c733c498"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "AG_Decision_Support/project.uiproj",
+      "Id": "87ac9346-de0a-45e0-bed2-cbe8bd6467a2"
+    }
+  ],
+  "AutomationHubIdeaUrl": null
+}

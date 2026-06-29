@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Update_Claim_Record",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "6f8a4b8c-569c-445a-8d65-d3cb8574133f",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "WF_Update_Claim_Record",
+      "description": null
+    },
+    "locks": [],
+    "key": "ad5f806d-5356-43fc-9af4-8c31a1d50352"
+  }
+}

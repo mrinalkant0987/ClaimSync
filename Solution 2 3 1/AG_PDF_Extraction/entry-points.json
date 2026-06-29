@@ -1,0 +1,89 @@
+{
+    "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+    "$id": "entry-points.json",
+    "entryPoints": [
+        {
+            "filePath": "main",
+            "uniqueId": "afeca043-49fa-470d-a05b-081c2280b338",
+            "type": "function",
+            "input": {
+                "type": "object",
+                "properties": {
+                    "claim_id": {
+                        "type": "string"
+                    },
+                    "pdf_file_name": {
+                        "type": "string"
+                    },
+                    "pdf_file_path_or_reference": {
+                        "type": "string"
+                    },
+                    "claim_folder_context": {
+                        "type": "string"
+                    },
+                    "extraction_request_notes": {
+                        "type": "string"
+                    }
+                },
+                "required": []
+            },
+            "output": {
+                "type": "object",
+                "properties": {
+                    "pdf_text": {
+                        "type": "string"
+                    },
+                    "pdf_status": {
+                        "type": "string"
+                    },
+                    "pdf_notes": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "pdf_text",
+                    "pdf_status",
+                    "pdf_notes"
+                ]
+            },
+            "graph": {
+                "nodes": [
+                    {
+                        "id": "main.py:144",
+                        "name": "main",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:73",
+                        "name": "extract_pdf_text",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    },
+                    {
+                        "id": "main.py:36",
+                        "name": "download_from_storage",
+                        "type": "function",
+                        "metadata": {
+                            "file": "main.py"
+                        }
+                    }
+                ],
+                "edges": [
+                    {
+                        "source": "main.py:144",
+                        "target": "main.py:73"
+                    },
+                    {
+                        "source": "main.py:144",
+                        "target": "main.py:36"
+                    }
+                ]
+            }
+        }
+    ]
+}

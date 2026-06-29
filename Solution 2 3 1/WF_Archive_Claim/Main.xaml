@@ -1,0 +1,233 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib"
+ xmlns:si="clr-namespace:System.IO;assembly=System.Private.CoreLib"
+ xmlns:ui="http://schemas.uipath.com/workflow/activities"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_ClaimFolderPath" Type="InArgument(x:String)" />
+  </x:Members>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="16">
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.IO.Compression</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Text</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>Newtonsoft.Json</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="15">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>netstandard</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.IO.Compression</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Runtime</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="WF_Archive_Claim" sap:VirtualizedContainerService.HintSize="440,900" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="archiveRoot" />
+      <Variable x:TypeArguments="x:String" Name="folderName" />
+      <Variable x:TypeArguments="x:String" Name="archivePath" />
+      <Variable x:TypeArguments="x:String" Name="auditFilePath" />
+      <Variable x:TypeArguments="x:String" Name="auditEntry" />
+      <Variable x:TypeArguments="x:String" Name="txtContent" />
+      <Variable x:TypeArguments="x:String" Name="docxPath" />
+      <Variable x:TypeArguments="x:String" Name="sourceTxtPath" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:ManualTrigger Result="{x:Null}" DisplayName="Manual Trigger" sap2010:WorkflowViewState.IdRef="ManualTrigger_1" />
+    <Assign x:TypeArguments="x:String" DisplayName="STEP 1 — Set archiveRoot = Archive" sap2010:WorkflowViewState.IdRef="Assign_1" To="[archiveRoot]" Value="[&quot;Archive&quot;]" />
+    <Assign x:TypeArguments="x:String" DisplayName="STEP 2 — Extract folderName" sap2010:WorkflowViewState.IdRef="Assign_2" To="[folderName]" Value="[If(Not String.IsNullOrEmpty(in_ClaimFolderPath), New System.IO.DirectoryInfo(in_ClaimFolderPath).Name, &quot;&quot;)]" />
+    <Assign x:TypeArguments="x:String" DisplayName="STEP 3 — Compute archivePath" sap2010:WorkflowViewState.IdRef="Assign_3" To="[archivePath]" Value="[System.IO.Path.Combine(archiveRoot, folderName)]" />
+    <TryCatch DisplayName="STEP 4 — Try Archive Claim" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <TryCatch.Try>
+        <Sequence DisplayName="Archive Logic" sap2010:WorkflowViewState.IdRef="Sequence_3">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <If Condition="[Not System.IO.Directory.Exists(archiveRoot)]" DisplayName="STEP 4a — Create Archive Dir if Missing" sap2010:WorkflowViewState.IdRef="If_1">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <If.Then>
+              <InvokeMethod DisplayName="Create Archive Directory" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" MethodName="CreateDirectory" TargetType="si:Directory">
+                <InArgument x:TypeArguments="x:String">[archiveRoot]</InArgument>
+              </InvokeMethod>
+            </If.Then>
+          </If>
+          <InvokeMethod DisplayName="STEP 4b — Directory.Move to Archive" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" MethodName="Move" TargetType="si:Directory">
+            <InArgument x:TypeArguments="x:String">[in_ClaimFolderPath]</InArgument>
+            <InArgument x:TypeArguments="x:String">[archivePath]</InArgument>
+          </InvokeMethod>
+        </Sequence>
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_1">
+          <ActivityAction x:TypeArguments="s:Exception">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="s:Exception" Name="ex" />
+            </ActivityAction.Argument>
+            <Sequence DisplayName="Handle Archive Error" sap2010:WorkflowViewState.IdRef="Sequence_5">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:LogMessage DisplayName="Log Archive Error" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Warn" Message="[&quot;[WF_Archive_Claim] Archive operation failed: &quot; + ex.Message]" />
+            </Sequence>
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+    <Assign DisplayName="STEP 5 — Build auditFilePath" sap2010:WorkflowViewState.IdRef="Assign_5">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[auditFilePath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrEmpty(archivePath), System.IO.Path.Combine(archivePath, folderName + ".txt"), "")]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="STEP 5 — Build auditEntry" sap2010:WorkflowViewState.IdRef="Assign_6">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[auditEntry]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">["------------------------------------------" + Environment.NewLine + "WF_Archive_Claim" + Environment.NewLine + "------------------------------------------" + Environment.NewLine + "archivePath : " + If(archivePath IsNot Nothing, archivePath, "") + Environment.NewLine + "timestamp : " + Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine + Environment.NewLine]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <If Condition="[Not String.IsNullOrEmpty(auditFilePath)]" DisplayName="STEP 5 — Append audit if path valid" sap2010:WorkflowViewState.IdRef="If_2">
+      <If.Then>
+        <TryCatch DisplayName="TryCatch: Append audit safely" sap2010:WorkflowViewState.IdRef="TryCatch_2">
+          <TryCatch.Try>
+            <InvokeMethod DisplayName="Append to audit file" sap2010:WorkflowViewState.IdRef="InvokeMethod_2" MethodName="AppendAllText" TargetType="si:File">
+              <InArgument x:TypeArguments="x:String">[auditFilePath]</InArgument>
+              <InArgument x:TypeArguments="x:String">[auditEntry]</InArgument>
+            </InvokeMethod>
+          </TryCatch.Try>
+          <TryCatch.Catches>
+            <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_2">
+              <ActivityAction x:TypeArguments="s:Exception">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="s:Exception" Name="exAudit" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Audit append failed — ignore" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ui:LogMessage DisplayName="Log Audit Append Error" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Warn" Message="[&quot;[WF_Archive_Claim] Audit append failed: &quot; + exAudit.Message]" />
+                </Sequence>
+              </ActivityAction>
+            </Catch>
+          </TryCatch.Catches>
+        </TryCatch>
+      </If.Then>
+    </If>
+    <Sequence DisplayName="STEP 6 — Convert TXT to DOCX" sap2010:WorkflowViewState.IdRef="Sequence_2">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <Assign DisplayName="Build DOCX path" sap2010:WorkflowViewState.IdRef="Assign_7">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[docxPath]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[System.IO.Path.Combine(archivePath, folderName + ".docx")]</InArgument>
+        </Assign.Value>
+      </Assign>
+      <Assign DisplayName="Determine source TXT path" sap2010:WorkflowViewState.IdRef="Assign_8">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[sourceTxtPath]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[If(System.IO.File.Exists(System.IO.Path.Combine(archivePath, folderName + ".txt")), System.IO.Path.Combine(archivePath, folderName + ".txt"), If(System.IO.File.Exists(System.IO.Path.Combine(in_ClaimFolderPath, folderName + ".txt")), System.IO.Path.Combine(in_ClaimFolderPath, folderName + ".txt"), ""))]</InArgument>
+        </Assign.Value>
+      </Assign>
+      <If Condition="[Not String.IsNullOrEmpty(sourceTxtPath)]" DisplayName="TXT exists for conversion?" sap2010:WorkflowViewState.IdRef="If_3">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <If.Then>
+          <Sequence DisplayName="Convert and cleanup" sap2010:WorkflowViewState.IdRef="Sequence_4">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign DisplayName="Read TXT content" sap2010:WorkflowViewState.IdRef="Assign_9">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:String">[txtContent]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:String">[System.IO.File.ReadAllText(sourceTxtPath)]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <ui:InvokeCode Code="using System.IO;using System.IO.Compression;using System.Text;var c=in_txtContent??&quot;&quot;;c=c.Replace(&quot;&amp;&quot;,&quot;&amp;amp;&quot;).Replace(&quot;&lt;&quot;,&quot;&amp;lt;&quot;).Replace(&quot;&gt;&quot;,&quot;&amp;gt;&quot;).Replace(&quot;\&quot;&quot;,&quot;&amp;quot;&quot;);using(var f=new FileStream(in_docxPath,FileMode.Create))using(var z=new ZipArchive(f,ZipArchiveMode.Create)){var e=z.CreateEntry(&quot;[Content_Types].xml&quot;);using(var s=e.Open())using(var w=new StreamWriter(s,Encoding.UTF8))w.Write(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot; standalone=\&quot;yes\&quot;?&gt;&lt;Types xmlns=\&quot;http://schemas.openxmlformats.org/package/2006/content-types\&quot;&gt;&lt;Default Extension=\&quot;rels\&quot; ContentType=\&quot;application/vnd.openxmlformats-package.relationships+xml\&quot;/&gt;&lt;Override PartName=\&quot;/word/document.xml\&quot; ContentType=\&quot;application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml\&quot;/&gt;&lt;/Types&gt;&quot;);e=z.CreateEntry(&quot;_rels/.rels&quot;);using(var s=e.Open())using(var w=new StreamWriter(s,Encoding.UTF8))w.Write(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot; standalone=\&quot;yes\&quot;?&gt;&lt;Relationships xmlns=\&quot;http://schemas.openxmlformats.org/package/2006/relationships\&quot;&gt;&lt;Relationship Id=\&quot;rId1\&quot; Type=\&quot;http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\&quot; Target=\&quot;word/document.xml\&quot;/&gt;&lt;/Relationships&gt;&quot;);e=z.CreateEntry(&quot;word/document.xml&quot;);using(var s=e.Open())using(var w=new StreamWriter(s,Encoding.UTF8))w.Write(&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot; standalone=\&quot;yes\&quot;?&gt;&lt;w:document xmlns:w=\&quot;http://schemas.openxmlformats.org/wordprocessingml/2006/main\&quot;&gt;&lt;w:body&gt;&lt;w:p&gt;&lt;w:r&gt;&lt;w:t&gt;&quot;+c+&quot;&lt;/w:t&gt;&lt;/w:r&gt;&lt;/w:p&gt;&lt;/w:body&gt;&lt;/w:document&gt;&quot;);}" ContinueOnError="True" DisplayName="Create DOCX from text" sap2010:WorkflowViewState.IdRef="InvokeCode_1" Language="CSharp">
+              <ui:InvokeCode.Arguments>
+                <InArgument x:TypeArguments="x:String" x:Key="in_txtContent">[txtContent]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_docxPath">[docxPath]</InArgument>
+              </ui:InvokeCode.Arguments>
+            </ui:InvokeCode>
+            <If Condition="[System.IO.File.Exists(docxPath)]" DisplayName="DOCX created?" sap2010:WorkflowViewState.IdRef="If_4">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <If.Then>
+                <InvokeMethod DisplayName="Delete source TXT" sap2010:WorkflowViewState.IdRef="InvokeMethod_4" MethodName="Delete" TargetType="si:File">
+                  <InArgument x:TypeArguments="x:String">[sourceTxtPath]</InArgument>
+                </InvokeMethod>
+              </If.Then>
+            </If>
+          </Sequence>
+        </If.Then>
+      </If>
+    </Sequence>
+  </Sequence>
+</Activity>

@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Monitor_Claim_Intake",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "26f1dbd7-de27-4a60-b1c4-78ecb20e885b",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "WF_Monitor_Claim_Intake",
+      "description": null
+    },
+    "locks": [],
+    "key": "ff9bf4a2-9d90-4017-ba73-f14cbf27cb33"
+  }
+}

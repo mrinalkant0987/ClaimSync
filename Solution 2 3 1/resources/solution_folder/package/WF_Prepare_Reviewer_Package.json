@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Prepare_Reviewer_Package",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "1972bbca-6227-40ce-876d-3ca2cd8e2475",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "WF_Prepare_Reviewer_Package",
+      "description": null
+    },
+    "locks": [],
+    "key": "f69708fd-3ade-4eb0-a5d2-a9b7d4a94a57"
+  }
+}

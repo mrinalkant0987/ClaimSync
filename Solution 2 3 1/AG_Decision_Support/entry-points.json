@@ -1,0 +1,127 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "type": "agent",
+      "uniqueId": "09b57460-5ad2-44f7-ad34-b0d4373e1fb7",
+      "input": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "analysis_result_json",
+          "fraud_risk_json"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "description": "Unique claim identifier (e.g. CLM-20260622-INVOICE-A3F9B1). Required for traceability. Must be echoed exactly in output."
+          },
+          "analysis_result_json": {
+            "type": "string",
+            "description": "JSON string output from AG_Claim_Analysis_Core. Contains the 10-field analysis contract: category (Healthcare/Vehicle/Travel), eligible (boolean), documents_complete (boolean), missing_documents (array), analysis_confidence (number), key_document_facts, recommendation, recommendation_notes, suggested_next_action. Parse as JSON before use."
+          },
+          "fraud_risk_json": {
+            "type": "string",
+            "description": "JSON string output from AG_Fraud_Risk. Contains fraudRisk object with: level (low/medium/high), score (integer 0-100), score_confidence (number), signals (pipe-separated string), corroborating_signals (pipe-separated string), reasoning, recommended_action. Parse as JSON before use. Note: signals and corroborating_signals are pipe-separated strings, not arrays."
+          },
+          "reviewer_package": {
+            "type": "string",
+            "description": "Consolidated multi-section reviewer package from WF_Prepare_Reviewer_Package. Contains validation results, AI claim analysis, fraud risk assessment, and document excerpts. Use as supplementary context if upstream JSONs are incomplete."
+          },
+          "knowledge_bundle": {
+            "type": "string",
+            "description": "Loaded KB content from WF_Load_Agent_Knowledge for AG_Decision_Support. Contains decision guidelines, settlement thresholds, approval authority rules, and partial-approval criteria. Read BEFORE applying priority logic. If empty, apply built-in priority logic."
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "recommendation",
+          "recommendation_confidence",
+          "recommendation_rationale",
+          "key_risk_factors",
+          "suggested_settlement_notes",
+          "decission_support"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "description": "Echo of the input claim_id. Must match input exactly. Never modify or reformat."
+          },
+          "recommendation": {
+            "type": "string",
+            "description": "AI-generated decision recommendation for the human reviewer. Exactly one of: Approve, Partial Approve, Reject, Request Documents. Determined by first-match priority logic. This is guidance only — the human reviewer makes the final decision via HITL.",
+            "enum": [
+              "Approve",
+              "Partial Approve",
+              "Reject",
+              "Request Documents"
+            ]
+          },
+          "recommendation_confidence": {
+            "type": "number",
+            "description": "Confidence score 0.0–1.0 for the recommendation. Derived from the combination of analysis_confidence (from AG_Claim_Analysis_Core) and fraud risk score (from AG_Fraud_Risk). High fraud score suppresses confidence. Never use the field name 'confidence' — this field is always named 'recommendation_confidence'."
+          },
+          "recommendation_rationale": {
+            "type": "string",
+            "description": "3–6 sentence explanation of the recommendation. Must reference: the claim category and eligibility outcome, the fraud risk level and score, the specific priority rule that triggered the recommendation, and any key risk factors. No speculation beyond input evidence."
+          },
+          "key_risk_factors": {
+            "type": "array",
+            "description": "Ordered list of the most significant risk factors influencing the recommendation. Include fraud signals, validation warnings, missing documents, and confidence gaps. List in descending order of severity. Empty array [] if no risk factors identified.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "suggested_settlement_notes": {
+            "type": "string",
+            "description": "Optional guidance for the human reviewer on settlement considerations. Include: if Approve, note the claimed amount and any conditions; if Partial Approve, suggest what portion may be supportable and why; if Reject, state the disqualifying reason clearly; if Request Documents, list the specific documents needed. Keep to 2–4 sentences."
+          },
+          "decission_support": {
+            "type": "object",
+            "properties": {
+              "claim_id": {
+                "type": "string",
+                "description": "Echo of the input claim_id. Must match input exactly. Never modify or reformat."
+              },
+              "recommendation": {
+                "type": "string",
+                "description": "AI-generated decision recommendation for the human reviewer. Exactly one of: Approve, Partial Approve, Reject, Request Documents. Determined by first-match priority logic. This is guidance only — the human reviewer makes the final decision via HITL.",
+                "enum": [
+                  "Approve",
+                  "Partial Approve",
+                  "Reject",
+                  "Request Documents"
+                ]
+              },
+              "recommendation_confidence": {
+                "type": "number",
+                "description": "Confidence score 0.0–1.0 for the recommendation. Derived from the combination of analysis_confidence (from AG_Claim_Analysis_Core) and fraud risk score (from AG_Fraud_Risk). High fraud score suppresses confidence. Never use the field name 'confidence' — this field is always named 'recommendation_confidence'."
+              },
+              "recommendation_rationale": {
+                "type": "string",
+                "description": "3–6 sentence explanation of the recommendation. Must reference: the claim category and eligibility outcome, the fraud risk level and score, the specific priority rule that triggered the recommendation, and any key risk factors. No speculation beyond input evidence."
+              },
+              "key_risk_factors": {
+                "type": "array",
+                "description": "Ordered list of the most significant risk factors influencing the recommendation. Include fraud signals, validation warnings, missing documents, and confidence gaps. List in descending order of severity. Empty array [] if no risk factors identified.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "suggested_settlement_notes": {
+                "type": "string",
+                "description": "Optional guidance for the human reviewer on settlement considerations. Include: if Approve, note the claimed amount and any conditions; if Partial Approve, suggest what portion may be supportable and why; if Reject, state the disqualifying reason clearly; if Request Documents, list the specific documents needed. Keep to 2–4 sentences."
+              }
+            }
+          }
+        },
+        "title": "Outputs"
+      }
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "version": "1.1.0",
+  "settings": {
+    "model": "gpt-4o-2024-11-20",
+    "maxTokens": 16384,
+    "temperature": 0,
+    "engine": "basic-v2",
+    "maxIterations": 25,
+    "mode": "standard"
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "claim_id",
+      "analysis_result_json",
+      "fraud_risk_json"
+    ],
+    "properties": {
+      "claim_id": {
+        "type": "string",
+        "description": "Unique claim identifier (e.g. CLM-20260622-INVOICE-A3F9B1). Required for traceability. Must be echoed exactly in output."
+      },
+      "analysis_result_json": {
+        "type": "string",
+        "description": "JSON string output from AG_Claim_Analysis_Core. Contains the 10-field analysis contract: category (Healthcare/Vehicle/Travel), eligible (boolean), documents_complete (boolean), missing_documents (array), analysis_confidence (number), key_document_facts, recommendation, recommendation_notes, suggested_next_action. Parse as JSON before use."
+      },
+      "fraud_risk_json": {
+        "type": "string",
+        "description": "JSON string output from AG_Fraud_Risk. Contains fraudRisk object with: level (low/medium/high), score (integer 0-100), score_confidence (number), signals (pipe-separated string), corroborating_signals (pipe-separated string), reasoning, recommended_action. Parse as JSON before use. Note: signals and corroborating_signals are pipe-separated strings, not arrays."
+      },
+      "reviewer_package": {
+        "type": "string",
+        "description": "Consolidated multi-section reviewer package from WF_Prepare_Reviewer_Package. Contains validation results, AI claim analysis, fraud risk assessment, and document excerpts. Use as supplementary context if upstream JSONs are incomplete."
+      },
+      "knowledge_bundle": {
+        "type": "string",
+        "description": "Loaded KB content from WF_Load_Agent_Knowledge for AG_Decision_Support. Contains decision guidelines, settlement thresholds, approval authority rules, and partial-approval criteria. Read BEFORE applying priority logic. If empty, apply built-in priority logic."
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "claim_id",
+      "recommendation",
+      "recommendation_confidence",
+      "recommendation_rationale",
+      "key_risk_factors",
+      "suggested_settlement_notes",
+      "decission_support"
+    ],
+    "properties": {
+      "claim_id": {
+        "type": "string",
+        "description": "Echo of the input claim_id. Must match input exactly. Never modify or reformat."
+      },
+      "recommendation": {
+        "type": "string",
+        "description": "AI-generated decision recommendation for the human reviewer. Exactly one of: Approve, Partial Approve, Reject, Request Documents. Determined by first-match priority logic. This is guidance only — the human reviewer makes the final decision via HITL.",
+        "enum": [
+          "Approve",
+          "Partial Approve",
+          "Reject",
+          "Request Documents"
+        ]
+      },
+      "recommendation_confidence": {
+        "type": "number",
+        "description": "Confidence score 0.0–1.0 for the recommendation. Derived from the combination of analysis_confidence (from AG_Claim_Analysis_Core) and fraud risk score (from AG_Fraud_Risk). High fraud score suppresses confidence. Never use the field name 'confidence' — this field is always named 'recommendation_confidence'."
+      },
+      "recommendation_rationale": {
+        "type": "string",
+        "description": "3–6 sentence explanation of the recommendation. Must reference: the claim category and eligibility outcome, the fraud risk level and score, the specific priority rule that triggered the recommendation, and any key risk factors. No speculation beyond input evidence."
+      },
+      "key_risk_factors": {
+        "type": "array",
+        "description": "Ordered list of the most significant risk factors influencing the recommendation. Include fraud signals, validation warnings, missing documents, and confidence gaps. List in descending order of severity. Empty array [] if no risk factors identified.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "suggested_settlement_notes": {
+        "type": "string",
+        "description": "Optional guidance for the human reviewer on settlement considerations. Include: if Approve, note the claimed amount and any conditions; if Partial Approve, suggest what portion may be supportable and why; if Reject, state the disqualifying reason clearly; if Request Documents, list the specific documents needed. Keep to 2–4 sentences."
+      },
+      "decission_support": {
+        "type": "object",
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "description": "Echo of the input claim_id. Must match input exactly. Never modify or reformat."
+          },
+          "recommendation": {
+            "type": "string",
+            "description": "AI-generated decision recommendation for the human reviewer. Exactly one of: Approve, Partial Approve, Reject, Request Documents. Determined by first-match priority logic. This is guidance only — the human reviewer makes the final decision via HITL.",
+            "enum": [
+              "Approve",
+              "Partial Approve",
+              "Reject",
+              "Request Documents"
+            ]
+          },
+          "recommendation_confidence": {
+            "type": "number",
+            "description": "Confidence score 0.0–1.0 for the recommendation. Derived from the combination of analysis_confidence (from AG_Claim_Analysis_Core) and fraud risk score (from AG_Fraud_Risk). High fraud score suppresses confidence. Never use the field name 'confidence' — this field is always named 'recommendation_confidence'."
+          },
+          "recommendation_rationale": {
+            "type": "string",
+            "description": "3–6 sentence explanation of the recommendation. Must reference: the claim category and eligibility outcome, the fraud risk level and score, the specific priority rule that triggered the recommendation, and any key risk factors. No speculation beyond input evidence."
+          },
+          "key_risk_factors": {
+            "type": "array",
+            "description": "Ordered list of the most significant risk factors influencing the recommendation. Include fraud signals, validation warnings, missing documents, and confidence gaps. List in descending order of severity. Empty array [] if no risk factors identified.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "suggested_settlement_notes": {
+            "type": "string",
+            "description": "Optional guidance for the human reviewer on settlement considerations. Include: if Approve, note the claimed amount and any conditions; if Partial Approve, suggest what portion may be supportable and why; if Reject, state the disqualifying reason clearly; if Request Documents, list the specific documents needed. Keep to 2–4 sentences."
+          }
+        }
+      }
+    },
+    "title": "Outputs"
+  },
+  "metadata": {
+    "storageVersion": "50.0.0",
+    "isConversational": false,
+    "targetRuntime": "pythonAgent",
+    "showProjectCreationExperience": false
+  },
+  "type": "lowCode",
+  "projectId": "a26d1d33-4326-4fd7-a357-0e4726cb5280",
+  "messages": [
+    {
+      "role": "system",
+      "content": "## Role\nYou are AG_Decision_Support, the decision synthesis agent in the ClaimSync Track 2 Maestro BPMN claims settlement pipeline. Your job is to synthesize the outputs of AG_Claim_Analysis_Core and AG_Fraud_Risk into a single structured recommendation for the human reviewer at the HITL_Reviewer_Decision step. You do NOT make final decisions. You do NOT approve or reject claims. You provide AI guidance only.\n\n## Tool Rules\n- No external tools available. Reason entirely from inputs provided.\n- knowledge_bundle: Read this FIRST before applying priority logic. Contains decision guidelines, settlement thresholds, approval authority rules, and partial-approval criteria. If empty, apply built-in priority logic below. KB content may override built-in thresholds where explicitly stated.\n- analysis_result_json: Parse as JSON. Contains category, eligible, documents_complete, missing_documents, analysis_confidence, key_document_facts.\n- fraud_risk_json: Parse as JSON. Contains fraudRisk.level, fraudRisk.score, fraudRisk.signals (pipe-separated string), fraudRisk.corroborating_signals (pipe-separated string), fraudRisk.reasoning.\n- reviewer_package: Supplementary structured text. Use if upstream JSONs are incomplete.\n\n## Work Steps\n\n### Step 1 — Read Knowledge Bundle\nRead knowledge_bundle FIRST before all decisions. Extract any threshold overrides, settlement guidelines, or approval authority rules. Apply them in Steps 3 and 4. If empty, proceed with built-in logic.\n\n### Step 2 — Parse and Validate Inputs\nParse analysis_result_json and fraud_risk_json as JSON. Extract and record:\n- From analysis_result_json: category, eligible, documents_complete, missing_documents, analysis_confidence, key_document_facts\n- From fraud_risk_json: fraudRisk.level, fraudRisk.score, fraudRisk.signals, fraudRisk.corroborating_signals, fraudRisk.reasoning\n- Note claim_id and any parse failures before proceeding.\n- Note: fraudRisk.signals and fraudRisk.corroborating_signals are pipe-separated strings — split on \"|\" to enumerate individual signals.\n\n### Step 3 — Collect Risk Factors\nBuild key_risk_factors list by collecting ALL that apply, ordered by severity (most severe first):\n1. Split fraudRisk.signals on \"|\" — add each as a risk factor\n2. Split fraudRisk.corroborating_signals on \"|\" — add each as a corroborating risk factor\n3. missing_documents entries (from analysis_result_json)\n4. Low analysis_confidence (if < 0.50 → record \"Low category confidence: {value}\")\n5. eligible = false (record reason if determinable)\n6. Any BV FAIL entries from reviewer_package\n\n### Step 4 — Calibrate Recommendation Confidence\nCompute recommendation_confidence (0.0–1.0). Check KB for threshold overrides first:\n- Start with: analysis_confidence from analysis_result_json\n- fraudRisk.level = \"high\" → subtract 0.30\n- fraudRisk.level = \"medium\" → subtract 0.15\n- fraudRisk.level = \"low\" → no change\n- Each missing document → subtract 0.05 (max 0.20 total)\n- eligible = false → subtract 0.20\n- documents_complete = false → subtract 0.10\n- Floor: 0.10 | Ceiling: 0.85\n- Field name is ALWAYS recommendation_confidence — NEVER \"confidence\".\n\n### Step 5 — Apply First-Match Priority Logic (STOP at first match)\nEvaluate in STRICT priority order. Stop at the FIRST condition that matches.\n\n\n**Priority 1 — Reject (Ineligible):**\nIF eligible == false (from analysis_result_json)\nTHEN recommendation = \"Reject\"\nRationale prefix: \"Claim does not meet eligibility criteria based on document evidence.\"\n→ STOP\n\n**Priority 2 — Reject (High Fraud):**\nIF fraudRisk.level == \"high\"\nTHEN recommendation = \"Reject\"\nRationale prefix: \"High fraud risk (score: {score}) detected — recommending rejection pending specialist review outcome.\"\n→ STOP\n\n**Priority 3 — Partial Approve (Medium Fraud Risk):**\nIF fraudRisk.level == \"medium\"\nTHEN recommendation = \"Partial Approve\"\nRationale prefix: \"Medium fraud risk (score: {score}) — recommending partial approval pending human review of risk signals.\"\n→ STOP\n\n**Priority 4 — Partial Approve (Low Confidence):**\nIF recommendation_confidence < 0.50\nTHEN recommendation = \"Partial Approve\"\nRationale prefix: \"Analysis confidence below threshold ({value}) — recommending partial approval with additional reviewer scrutiny.\"\n→ STOP\n\n**Priority 5 — Approve:**\nIF all previous conditions are false (documents_complete=true, eligible=true, fraudRisk.level=\"low\", recommendation_confidence≥0.50)\nTHEN recommendation = \"Approve\"\nRationale prefix: \"All risk indicators within acceptable thresholds — recommending approval.\"\n→ STOP\n\n### Step 6 — Write Recommendation Rationale\nWrite 3–6 sentences. Must include:\n1. Claim category and eligibility outcome\n2. Fraud risk level, score, and key signals (split fraudRisk.signals on \"|\")\n3. The specific Priority rule that triggered (e.g., \"Priority 1 triggered\")\n4. recommendation_confidence value and what influenced it\n5. Any key missing documents or risk factors\nNo speculation beyond input evidence.\n\n### Step 7 — Write Suggested Settlement Notes\n2–4 sentences tailored to the recommendation:\n- Reject (Ineligible): State the disqualifying eligibility reason clearly.\n- Reject (High Fraud): State the fraud signals and score; note specialist review is pending.\n- Partial Approve: Suggest supportable portion, basis for partial approval, what reviewer should scrutinize.\n- Approve: State claimed amount (if known), conditions for payment, processing notes.\n\n### Step 8 — Assemble Output\nReturn ONLY valid JSON matching outputSchema exactly. No markdown. No explanation outside JSON.\n\n## Output Rules\n- Return ONLY JSON matching outputSchema exactly. No extra keys. No markdown fences. No preamble or postamble.\n- recommendation MUST be exactly one of: Approve, Partial Approve, Reject.\n- recommendation_confidence MUST be a number 0.10–0.85. Field name ALWAYS recommendation_confidence — NEVER \"confidence\".\n- key_risk_factors MUST be an array. Use [] if none.\n- claim_id MUST be echoed exactly from input.\n- All 6 required fields must be present. Never return null.\n- Priority order is MANDATORY: Reject → Partial Approve → Approve. Stop at first match.\n\n## Final Reminder\nRead knowledge_bundle first. Apply priority logic in order:  Reject (P1/P2) → Partial Approve (P3/P4) → Approve (P5). Output field is recommendation_confidence — never \"confidence\". Return strict 6-field JSON.",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "## Role\nYou are AG_Decision_Support, the decision synthesis agent in the ClaimSync Track 2 Maestro BPMN claims settlement pipeline. Your job is to synthesize the outputs of AG_Claim_Analysis_Core and AG_Fraud_Risk into a single structured recommendation for the human reviewer at the HITL_Reviewer_Decision step. You do NOT make final decisions. You do NOT approve or reject claims. You provide AI guidance only.\n\n## Tool Rules\n- No external tools available. Reason entirely from inputs provided.\n- knowledge_bundle: Read this FIRST before applying priority logic. Contains decision guidelines, settlement thresholds, approval authority rules, and partial-approval criteria. If empty, apply built-in priority logic below. KB content may override built-in thresholds where explicitly stated.\n- analysis_result_json: Parse as JSON. Contains category, eligible, documents_complete, missing_documents, analysis_confidence, key_document_facts.\n- fraud_risk_json: Parse as JSON. Contains fraudRisk.level, fraudRisk.score, fraudRisk.signals (pipe-separated string), fraudRisk.corroborating_signals (pipe-separated string), fraudRisk.reasoning.\n- reviewer_package: Supplementary structured text. Use if upstream JSONs are incomplete.\n\n## Work Steps\n\n### Step 1 — Read Knowledge Bundle\nRead knowledge_bundle FIRST before all decisions. Extract any threshold overrides, settlement guidelines, or approval authority rules. Apply them in Steps 3 and 4. If empty, proceed with built-in logic.\n\n### Step 2 — Parse and Validate Inputs\nParse analysis_result_json and fraud_risk_json as JSON. Extract and record:\n- From analysis_result_json: category, eligible, documents_complete, missing_documents, analysis_confidence, key_document_facts\n- From fraud_risk_json: fraudRisk.level, fraudRisk.score, fraudRisk.signals, fraudRisk.corroborating_signals, fraudRisk.reasoning\n- Note claim_id and any parse failures before proceeding.\n- Note: fraudRisk.signals and fraudRisk.corroborating_signals are pipe-separated strings — split on \"|\" to enumerate individual signals.\n\n### Step 3 — Collect Risk Factors\nBuild key_risk_factors list by collecting ALL that apply, ordered by severity (most severe first):\n1. Split fraudRisk.signals on \"|\" — add each as a risk factor\n2. Split fraudRisk.corroborating_signals on \"|\" — add each as a corroborating risk factor\n3. missing_documents entries (from analysis_result_json)\n4. Low analysis_confidence (if < 0.50 → record \"Low category confidence: {value}\")\n5. eligible = false (record reason if determinable)\n6. Any BV FAIL entries from reviewer_package\n\n### Step 4 — Calibrate Recommendation Confidence\nCompute recommendation_confidence (0.0–1.0). Check KB for threshold overrides first:\n- Start with: analysis_confidence from analysis_result_json\n- fraudRisk.level = \"high\" → subtract 0.30\n- fraudRisk.level = \"medium\" → subtract 0.15\n- fraudRisk.level = \"low\" → no change\n- Each missing document → subtract 0.05 (max 0.20 total)\n- eligible = false → subtract 0.20\n- documents_complete = false → subtract 0.10\n- Floor: 0.10 | Ceiling: 0.85\n- Field name is ALWAYS recommendation_confidence — NEVER \"confidence\".\n\n### Step 5 — Apply First-Match Priority Logic (STOP at first match)\nEvaluate in STRICT priority order. Stop at the FIRST condition that matches.\n\n\n**Priority 1 — Reject (Ineligible):**\nIF eligible == false (from analysis_result_json)\nTHEN recommendation = \"Reject\"\nRationale prefix: \"Claim does not meet eligibility criteria based on document evidence.\"\n→ STOP\n\n**Priority 2 — Reject (High Fraud):**\nIF fraudRisk.level == \"high\"\nTHEN recommendation = \"Reject\"\nRationale prefix: \"High fraud risk (score: {score}) detected — recommending rejection pending specialist review outcome.\"\n→ STOP\n\n**Priority 3 — Partial Approve (Medium Fraud Risk):**\nIF fraudRisk.level == \"medium\"\nTHEN recommendation = \"Partial Approve\"\nRationale prefix: \"Medium fraud risk (score: {score}) — recommending partial approval pending human review of risk signals.\"\n→ STOP\n\n**Priority 4 — Partial Approve (Low Confidence):**\nIF recommendation_confidence < 0.50\nTHEN recommendation = \"Partial Approve\"\nRationale prefix: \"Analysis confidence below threshold ({value}) — recommending partial approval with additional reviewer scrutiny.\"\n→ STOP\n\n**Priority 5 — Approve:**\nIF all previous conditions are false (documents_complete=true, eligible=true, fraudRisk.level=\"low\", recommendation_confidence≥0.50)\nTHEN recommendation = \"Approve\"\nRationale prefix: \"All risk indicators within acceptable thresholds — recommending approval.\"\n→ STOP\n\n### Step 6 — Write Recommendation Rationale\nWrite 3–6 sentences. Must include:\n1. Claim category and eligibility outcome\n2. Fraud risk level, score, and key signals (split fraudRisk.signals on \"|\")\n3. The specific Priority rule that triggered (e.g., \"Priority 1 triggered\")\n4. recommendation_confidence value and what influenced it\n5. Any key missing documents or risk factors\nNo speculation beyond input evidence.\n\n### Step 7 — Write Suggested Settlement Notes\n2–4 sentences tailored to the recommendation:\n- Reject (Ineligible): State the disqualifying eligibility reason clearly.\n- Reject (High Fraud): State the fraud signals and score; note specialist review is pending.\n- Partial Approve: Suggest supportable portion, basis for partial approval, what reviewer should scrutinize.\n- Approve: State claimed amount (if known), conditions for payment, processing notes.\n\n### Step 8 — Assemble Output\nReturn ONLY valid JSON matching outputSchema exactly. No markdown. No explanation outside JSON.\n\n## Output Rules\n- Return ONLY JSON matching outputSchema exactly. No extra keys. No markdown fences. No preamble or postamble.\n- recommendation MUST be exactly one of: Approve, Partial Approve, Reject.\n- recommendation_confidence MUST be a number 0.10–0.85. Field name ALWAYS recommendation_confidence — NEVER \"confidence\".\n- key_risk_factors MUST be an array. Use [] if none.\n- claim_id MUST be echoed exactly from input.\n- All 6 required fields must be present. Never return null.\n- Priority order is MANDATORY: Reject → Partial Approve → Approve. Stop at first match.\n\n## Final Reminder\nRead knowledge_bundle first. Apply priority logic in order:  Reject (P1/P2) → Partial Approve (P3/P4) → Approve (P5). Output field is recommendation_confidence — never \"confidence\". Return strict 6-field JSON."
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "Synthesize the following claim analysis and fraud risk outputs into a structured decision recommendation for the human reviewer.\n\n**Claim ID:** <claim_id>{{input.claim_id}}</claim_id>\n\n**Claim Analysis Result (JSON):** <analysis_result_json>{{input.analysis_result_json}}</analysis_result_json>\n\n**Fraud Risk Result (JSON):** <fraud_risk_json>{{input.fraud_risk_json}}</fraud_risk_json>\n\n**Reviewer Package:** <reviewer_package>{{input.reviewer_package}}</reviewer_package>\n\n**Knowledge Base Reference:** <knowledge_bundle>{{input.knowledge_bundle}}</knowledge_bundle>\n\n---\n\n**Processing Steps:**\n\n1. Read knowledge_bundle FIRST. Extract any threshold overrides or settlement guidelines. If empty, apply built-in logic.\n2. Parse analysis_result_json and fraud_risk_json as JSON. Note absent or empty fields.\n3. Parse fraudRisk.signals and fraudRisk.corroborating_signals by splitting on \"|\" — they are pipe-separated strings, not arrays.\n4. Collect all risk factors ordered by severity: fraud signals, corroborating BV WARN signals, missing documents, low confidence, ineligibility indicators.\n5. Compute recommendation_confidence: start from analysis_confidence, apply fraud level/missing doc/eligibility deductions. Floor 0.10, ceiling 0.85. Field name MUST be recommendation_confidence.\n6. Apply first-match priority logic in STRICT order — stop at the FIRST matching condition:\n   - **Priority 1:** documents_complete == false → Request Documents\n   - **Priority 2:** eligible == false → Reject\n   - **Priority 3:** fraudRisk.level == \"high\" → Reject\n   - **Priority 4:** fraudRisk.level == \"medium\" → Partial Approve\n   - **Priority 5:** recommendation_confidence < 0.50 → Partial Approve\n   - **Priority 6:** all clear → Approve\n7. Write recommendation_rationale (3–6 sentences): state which Priority fired, cite category, eligibility, fraud level/score, confidence, key signals.\n8. Write suggested_settlement_notes (2–4 sentences) tailored to the recommendation outcome.\n9. Assemble and return as strict JSON.\n\n**Output Rules:**\n- Return ONLY valid JSON matching the outputSchema exactly.\n- No markdown fences, no preamble, no explanation outside the JSON.\n- recommendation must be exactly one of: Approve, Partial Approve, Reject, Request Documents.\n- recommendation_confidence must be a number 0.10–0.85. Field name is ALWAYS recommendation_confidence — NEVER \"confidence\".\n- key_risk_factors must be an array (use [] if none).\n- claim_id must be echoed exactly from input.\n- All 6 required fields must be present. Never return null.",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "Synthesize the following claim analysis and fraud risk outputs into a structured decision recommendation for the human reviewer.\n\n**Claim ID:** <claim_id>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.claim_id"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</claim_id>\n\n**Claim Analysis Result (JSON):** <analysis_result_json>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.analysis_result_json"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</analysis_result_json>\n\n**Fraud Risk Result (JSON):** <fraud_risk_json>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.fraud_risk_json"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</fraud_risk_json>\n\n**Reviewer Package:** <reviewer_package>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.reviewer_package"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</reviewer_package>\n\n**Knowledge Base Reference:** <knowledge_bundle>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.knowledge_bundle"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</knowledge_bundle>\n\n---\n\n**Processing Steps:**\n\n1. Read knowledge_bundle FIRST. Extract any threshold overrides or settlement guidelines. If empty, apply built-in logic.\n2. Parse analysis_result_json and fraud_risk_json as JSON. Note absent or empty fields.\n3. Parse fraudRisk.signals and fraudRisk.corroborating_signals by splitting on \"|\" — they are pipe-separated strings, not arrays.\n4. Collect all risk factors ordered by severity: fraud signals, corroborating BV WARN signals, missing documents, low confidence, ineligibility indicators.\n5. Compute recommendation_confidence: start from analysis_confidence, apply fraud level/missing doc/eligibility deductions. Floor 0.10, ceiling 0.85. Field name MUST be recommendation_confidence.\n6. Apply first-match priority logic in STRICT order — stop at the FIRST matching condition:\n   - **Priority 1:** documents_complete == false → Request Documents\n   - **Priority 2:** eligible == false → Reject\n   - **Priority 3:** fraudRisk.level == \"high\" → Reject\n   - **Priority 4:** fraudRisk.level == \"medium\" → Partial Approve\n   - **Priority 5:** recommendation_confidence < 0.50 → Partial Approve\n   - **Priority 6:** all clear → Approve\n7. Write recommendation_rationale (3–6 sentences): state which Priority fired, cite category, eligibility, fraud level/score, confidence, key signals.\n8. Write suggested_settlement_notes (2–4 sentences) tailored to the recommendation outcome.\n9. Assemble and return as strict JSON.\n\n**Output Rules:**\n- Return ONLY valid JSON matching the outputSchema exactly.\n- No markdown fences, no preamble, no explanation outside the JSON.\n- recommendation must be exactly one of: Approve, Partial Approve, Reject, Request Documents.\n- recommendation_confidence must be a number 0.10–0.85. Field name is ALWAYS recommendation_confidence — NEVER \"confidence\".\n- key_risk_factors must be an array (use [] if none).\n- claim_id must be echoed exactly from input.\n- All 6 required fields must be present. Never return null."
+        }
+      ]
+    }
+  ]
+}

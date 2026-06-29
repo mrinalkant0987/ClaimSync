@@ -1,0 +1,119 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "type": "agent",
+      "uniqueId": "a5d6a1a5-2217-4b5b-a36d-3f9c2cf5e1a8",
+      "input": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "final_decision"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "description": "Unique claim identifier (e.g. CLM-20260622-INVOICE-A3F9B1). Required for traceability. Must be echoed in summary_report and audit_trail."
+          },
+          "final_decision": {
+            "type": "string",
+            "description": "The human reviewer's final decision from HITL_Reviewer_Decision. Exactly one of: Approve, Partial Approve, Reject, Request Documents. Must be echoed exactly as received — never modified or paraphrased."
+          },
+          "reviewer_notes": {
+            "type": "string",
+            "description": "Free-text notes entered by the human reviewer during HITL_Reviewer_Decision. Include verbatim in the summary report under reviewer commentary section."
+          },
+          "analysis_result_json": {
+            "type": "string",
+            "description": "JSON string output from AG_Claim_Analysis_Core. Contains category, eligible, documents_complete, analysis_confidence, key_document_facts, recommendation. Parse as JSON before use."
+          },
+          "fraud_risk_json": {
+            "type": "string",
+            "description": "JSON string output from AG_Fraud_Risk. Contains fraudRisk.level, fraudRisk.score, fraudRisk.signals, fraudRisk.reasoning. Parse as JSON before use."
+          },
+          "decision_support_json": {
+            "type": "string",
+            "description": "JSON string output from AG_Decision_Support. Contains recommendation, recommendation_confidence, recommendation_rationale, key_risk_factors, suggested_settlement_notes. Parse as JSON before use."
+          },
+          "reviewer_package": {
+            "type": "string",
+            "description": "Consolidated multi-section reviewer package from WF_Prepare_Reviewer_Package. Used as supplementary context for summary generation. Contains validation results, analysis excerpts, and document facts."
+          },
+          "knowledge_bundle": {
+            "type": "string",
+            "description": "Loaded KB content from WF_Load_Agent_Knowledge for AG_Final_Summary. Contains summary templates and audit trail formatting rules. If empty, proceed with built-in format."
+          }
+        }
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "summary_report",
+          "audit_trail",
+          "processing_metadata"
+        ],
+        "properties": {
+          "summary_report": {
+            "type": "string",
+            "description": "Structured human-readable settlement summary report. Must include clearly labeled sections: Claim ID, Final Decision (echoed exactly), Claim Category, Eligibility Outcome, Fraud Risk Level and Score, AI Recommendation vs Human Decision comparison (with alignment status), Reviewer Commentary (verbatim reviewer_notes), Key Document Facts, Settlement Notes, and Summary Confidence. Format with section headers for readability."
+          },
+          "audit_trail": {
+            "type": "string",
+            "description": "Pipe-separated chronological audit log. Each entry format: CLAIM_ID|STEP_NAME|OUTCOME|TIMESTAMP_UTC. Required steps in order: DOCUMENT_EXTRACTION, BUSINESS_VALIDATION, CLAIM_ANALYSIS, FRAUD_RISK_ASSESSMENT, DECISION_SUPPORT, HUMAN_REVIEW, FINAL_DECISION, SUMMARY_GENERATED. All entries must include claim_id as the first segment. SUMMARY_GENERATED timestamp must be actual current UTC time at generation. Entries separated by ' | ' (space-pipe-space)."
+          },
+          "processing_metadata": {
+            "type": "object",
+            "description": "Structured metadata object capturing key processing attributes for downstream record storage.",
+            "required": [
+              "claim_id",
+              "final_decision",
+              "summary_confidence",
+              "processed_at"
+            ],
+            "properties": {
+              "claim_id": {
+                "type": "string",
+                "description": "Echo of the input claim_id. Must match exactly."
+              },
+              "final_decision": {
+                "type": "string",
+                "description": "Echo of the human reviewer's final_decision. Must match exactly — never modified."
+              },
+              "category": {
+                "type": "string",
+                "description": "Claim category from AG_Claim_Analysis_Core. One of: Healthcare, Vehicle, Travel."
+              },
+              "fraud_risk_level": {
+                "type": "string",
+                "description": "Fraud risk level from AG_Fraud_Risk. One of: low, medium, high."
+              },
+              "fraud_risk_score": {
+                "type": "integer",
+                "description": "Numeric fraud risk score 0–100 from AG_Fraud_Risk."
+              },
+              "analysis_confidence": {
+                "type": "number",
+                "description": "Analysis confidence score 0.0–1.0 from AG_Claim_Analysis_Core."
+              },
+              "recommendation_confidence": {
+                "type": "number",
+                "description": "Recommendation confidence score 0.0–1.0 from AG_Decision_Support."
+              },
+              "summary_confidence": {
+                "type": "number",
+                "description": "Overall settlement outcome confidence score 0.0–1.0. Calculated from recommendation_confidence adjusted for human-AI alignment and fraud risk. Higher when human decision aligns with AI recommendation. Capped at 0.70 when reviewer overrides AI recommendation. Floor: 0.20. Ceiling: 0.90."
+              },
+              "processed_at": {
+                "type": "string",
+                "description": "UTC ISO 8601 timestamp of when this summary was generated. Format: yyyy-MM-ddTHH:mm:ssZ. Must reflect the actual current UTC time at generation — never hardcoded or copied from inputs."
+              }
+            }
+          }
+        },
+        "title": "Outputs"
+      }
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "version": "2.0",
+  "resources": [
+    {
+      "resource": "process",
+      "key": "WF_Monitor_Claim_Intake",
+      "id": "processWF_Monitor_Claim_Intake",
+      "value": {
+        "name": {
+          "defaultValue": "WF_Monitor_Claim_Intake",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "WF_Monitor_Claim_Intake",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "WF_Initialize_Claim_Record",
+      "id": "processWF_Initialize_Claim_Record",
+      "value": {
+        "name": {
+          "defaultValue": "WF_Initialize_Claim_Record",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "WF_Initialize_Claim_Record",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "WF_Read_And_Extract_Document_Text",
+      "id": "processWF_Read_And_Extract_Document_Text",
+      "value": {
+        "name": {
+          "defaultValue": "WF_Read_And_Extract_Document_Text",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "WF_Read_And_Extract_Document_Text",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "WF_Load_Agent_Knowledge",
+      "id": "processWF_Load_Agent_Knowledge",
+      "value": {
+        "name": {
+          "defaultValue": "WF_Load_Agent_Knowledge",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "WF_Load_Agent_Knowledge",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "WF_Archive_Claim",
+      "id": "processWF_Archive_Claim",
+      "value": {
+        "name": {
+          "defaultValue": "WF_Archive_Claim",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "WF_Archive_Claim",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "WF_Update_Claim_Record",
+      "id": "processWF_Update_Claim_Record",
+      "value": {
+        "name": {
+          "defaultValue": "WF_Update_Claim_Record",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "WF_Update_Claim_Record",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "WF_Send_Missing_Document_Request",
+      "id": "processWF_Send_Missing_Document_Request",
+      "value": {
+        "name": {
+          "defaultValue": "WF_Send_Missing_Document_Request",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "WF_Send_Missing_Document_Request",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "WF_Run_Business_Validations",
+      "id": "processWF_Run_Business_Validations",
+      "value": {
+        "name": {
+          "defaultValue": "WF_Run_Business_Validations",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "WF_Run_Business_Validations",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "AG_Claim_Analysis_Core",
+      "id": "processAG_Claim_Analysis_Core",
+      "value": {
+        "name": {
+          "defaultValue": "AG_Claim_Analysis_Core",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "AG_Claim_Analysis_Core",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "AG_Final_Summary",
+      "id": "processAG_Final_Summary",
+      "value": {
+        "name": {
+          "defaultValue": "AG_Final_Summary",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "AG_Final_Summary",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "AG_Decision_Support",
+      "id": "processAG_Decision_Support",
+      "value": {
+        "name": {
+          "defaultValue": "AG_Decision_Support",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "AG_Decision_Support",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "app",
+      "key": "ClaimHITLApp",
+      "id": "appClaimHITLApp",
+      "value": {
+        "name": {
+          "defaultValue": "ClaimHITLApp",
+          "isExpression": false,
+          "displayName": "App name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "HITL Reviewer Decision",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "id": "process",
+      "value": {
+        "folderPath": {
+          "defaultValue": "mrinal.kant@infosys.com's workspace/Debug_Solution",
+          "isExpression": false,
+          "displayName": "Folder path"
+        },
+        "name": {
+          "defaultValue": "AG_Claim_Analysis_Core",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "AG_Claim_Analysis_Core",
+        "BindingsVersion": "2.2",
+        "SolutionsSupport": "true"
+      }
+    }
+  ]
+}

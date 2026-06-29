@@ -1,0 +1,6 @@
+{
+  "ProjectType": "ProcessOrchestration",
+  "Name": "Claim_Sync",
+  "Description": null,
+  "MainFile": "Process.bpmn"
+}

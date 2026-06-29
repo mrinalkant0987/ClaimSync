@@ -1,0 +1,54 @@
+{
+  "version": "2.0",
+  "resources": [
+    {
+      "activityDisplayName": "Get KBStorageBucketName from Orchestrator",
+      "activityId": "GetAsset_Bucket_1",
+      "resource": "asset",
+      "key": "KBStorageBucketName",
+      "id": "assetKBStorageBucketNameKBStorageBucketNameFalse",
+      "value": {
+        "name": {
+          "defaultValue": "KBStorageBucketName",
+          "isExpression": false
+        }
+      },
+      "metadata": {
+        "BindingsVersion": "2.2"
+      }
+    },
+    {
+      "activityDisplayName": "Get KBBasePath from Orchestrator",
+      "activityId": "GetAsset_1",
+      "resource": "asset",
+      "key": "KBBasePath",
+      "id": "assetKBBasePathKBBasePathFalse",
+      "value": {
+        "name": {
+          "defaultValue": "KBBasePath",
+          "isExpression": false
+        }
+      },
+      "metadata": {
+        "BindingsVersion": "2.2"
+      }
+    },
+    {
+      "activityDisplayName": "Invoke Process",
+      "activityId": "InvokeProcess_1",
+      "resource": "process",
+      "key": "WF_Load_Knowledge_File",
+      "id": "processWF_Load_Knowledge_FileWF_Load_Knowledge_FileFalse",
+      "value": {
+        "name": {
+          "defaultValue": "WF_Load_Knowledge_File",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "BindingsVersion": "2.2"
+      }
+    }
+  ]
+}

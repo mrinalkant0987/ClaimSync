@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Request_Missing_Documents_Task",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "aa659476-22b4-4c27-8f65-15f3059cb61b",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "Request_Missing_Documents_Task",
+      "description": null
+    },
+    "locks": [],
+    "key": "2ad10883-caba-475f-9ccd-6d09a3155142"
+  }
+}

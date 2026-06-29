@@ -1,0 +1,505 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" this:Main.in_AgentName="AG_Claim_Analysis_Core" this:Main.in_KBBasePath="C:\Users\USER\Documents\Hackathon\Knowledge Base\" this:Main.in_ClaimFolderPath="C:\Users\USER\Documents\Hackathon\Test_Claims\InProgress\Claim_2026_002_Health\" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:si="clr-namespace:System.IO;assembly=System.Private.CoreLib" xmlns:this="clr-namespace:" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_AgentName" Type="InArgument(x:String)" />
+    <x:Property Name="in_KBBasePath" Type="InArgument(x:String)" />
+    <x:Property Name="in_ClaimFolderPath" Type="InArgument(x:String)" />
+    <x:Property Name="out_KnowledgeBundle" Type="OutArgument(x:String)" />
+    <x:Property Name="out_KnowledgeLoadStatus" Type="OutArgument(x:String)" />
+    <x:Property Name="out_KnowledgeQualityHint" Type="OutArgument(x:String)" />
+  </x:Members>
+  <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="36">
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>Newtonsoft.Json</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
+      <x:String>System.Linq.Expressions</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+      <x:String>System.Numerics</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="62">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>netstandard</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.Net.Primitives</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Runtime</AssemblyReference>
+      <AssemblyReference>System.Runtime.InteropServices</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>System.Collections.NonGeneric</AssemblyReference>
+      <AssemblyReference>System.Linq.Expressions</AssemblyReference>
+      <AssemblyReference>System.Security.Permissions</AssemblyReference>
+      <AssemblyReference>System.Configuration.ConfigurationManager</AssemblyReference>
+      <AssemblyReference>System.Console</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.Private.Uri</AssemblyReference>
+      <AssemblyReference>System.Private.DataContractSerialization</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
+      <AssemblyReference>System.IO.FileSystem.Watcher</AssemblyReference>
+      <AssemblyReference>System.IO.FileSystem.AccessControl</AssemblyReference>
+      <AssemblyReference>System.IO.FileSystem.DriveInfo</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>System.Linq.Async</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic.Core</AssemblyReference>
+      <AssemblyReference>System.CodeDom</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic.Forms</AssemblyReference>
+      <AssemblyReference>System.Runtime.Numerics</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="WF_Load_Agent_Knowledge" sap:VirtualizedContainerService.HintSize="663,3799" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="ResolvedKbPath">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="scg:List(x:String)" Name="KbFiles" />
+      <Variable x:TypeArguments="x:String" Name="FileTexts">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="SingleContent">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="RawBundle">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:Int32" Name="MaxKbChars">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:Int32" Value="999999999" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="auditFilePath">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="auditEntry">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Name="kbFilePath">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Assign x:TypeArguments="x:String" DisplayName="STEP 1 - Init: out_KnowledgeBundle = Empty" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_1" To="[out_KnowledgeBundle]" Value="&quot;&quot;" />
+    <Assign x:TypeArguments="x:String" DisplayName="Init: out_KnowledgeLoadStatus = pending" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_2" To="[out_KnowledgeLoadStatus]" Value="&quot;pending&quot;" />
+    <Assign x:TypeArguments="x:String" DisplayName="Init: out_KnowledgeQualityHint = Empty" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_3" To="[out_KnowledgeQualityHint]" Value="&quot;&quot;" />
+    <Assign x:TypeArguments="x:String" DisplayName="Init: FileTexts = Empty" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_FileTexts_Init" To="[FileTexts]" Value="&quot;&quot;" />
+    <If Condition="[Not String.IsNullOrEmpty(in_KBBasePath)]" DisplayName="STEP 2 - Resolve KB Path" sap:VirtualizedContainerService.HintSize="510,975" sap2010:WorkflowViewState.IdRef="If_1">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Assign x:TypeArguments="x:String" DisplayName="Assign: ResolvedKbPath = in_KBBasePath" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_5" To="[ResolvedKbPath]" Value="[in_KBBasePath]" />
+      </If.Then>
+      <If.Else>
+        <Sequence DisplayName="Resolve from Orchestrator / Env / Default" sap:VirtualizedContainerService.HintSize="510,834" sap2010:WorkflowViewState.IdRef="Sequence_Resolve_1">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <TryCatch DisplayName="TryGet: KBStorageBucketName (primary)" sap:VirtualizedContainerService.HintSize="480,304" sap2010:WorkflowViewState.IdRef="TryCatch_Bucket_1">
+            <TryCatch.Try>
+              <ui:GetRobotAsset TimeoutMS="{x:Null}" AssetName="KBStorageBucketName" CacheStrategy="None" DisplayName="Get KBStorageBucketName from Orchestrator" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="GetAsset_Bucket_1">
+                <ui:GetRobotAsset.Value>
+                  <OutArgument x:TypeArguments="x:String">[ResolvedKbPath]</OutArgument>
+                </ui:GetRobotAsset.Value>
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+              </ui:GetRobotAsset>
+            </TryCatch.Try>
+            <TryCatch.Catches>
+              <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_Bucket_1">
+                <ActivityAction x:TypeArguments="s:Exception">
+                  <ActivityAction.Argument>
+                    <DelegateInArgument x:TypeArguments="s:Exception" Name="exBucket" />
+                  </ActivityAction.Argument>
+                  <Assign x:TypeArguments="x:String" DisplayName="Clear bucket flag" sap:VirtualizedContainerService.HintSize="480,24" sap2010:WorkflowViewState.IdRef="Assign_ClearBucket_1" To="[ResolvedKbPath]" Value="&quot;&quot;" />
+                </ActivityAction>
+              </Catch>
+            </TryCatch.Catches>
+          </TryCatch>
+          <If Condition="[String.IsNullOrEmpty(ResolvedKbPath)]" DisplayName="If: No bucket? - try local path" sap:VirtualizedContainerService.HintSize="480,482" sap2010:WorkflowViewState.IdRef="If_Resolve_Local_1">
+            <If.Then>
+              <TryCatch DisplayName="TryGet: KBBasePath Asset (backup)" sap:VirtualizedContainerService.HintSize="480,293" sap2010:WorkflowViewState.IdRef="TryCatch_Asset_1">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <TryCatch.Try>
+                  <ui:GetRobotAsset TimeoutMS="{x:Null}" AssetName="KBBasePath" CacheStrategy="None" DisplayName="Get KBBasePath from Orchestrator" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="GetAsset_1">
+                    <ui:GetRobotAsset.Value>
+                      <OutArgument x:TypeArguments="x:String">[ResolvedKbPath]</OutArgument>
+                    </ui:GetRobotAsset.Value>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                  </ui:GetRobotAsset>
+                </TryCatch.Try>
+                <TryCatch.Catches>
+                  <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_Asset_1">
+                    <ActivityAction x:TypeArguments="s:Exception">
+                      <ActivityAction.Argument>
+                        <DelegateInArgument x:TypeArguments="s:Exception" Name="exAsset" />
+                      </ActivityAction.Argument>
+                      <If Condition="[Not String.IsNullOrEmpty(Environment.GetEnvironmentVariable(&quot;CLAIMSYNC_KB_PATH&quot;))]" DisplayName="If: env var exists?" sap:VirtualizedContainerService.HintSize="480,37" sap2010:WorkflowViewState.IdRef="If_Env_1">
+                        <If.Then>
+                          <Assign x:TypeArguments="x:String" DisplayName="Assign: ResolvedKbPath = env var" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_6" To="[ResolvedKbPath]" Value="[Environment.GetEnvironmentVariable(&quot;CLAIMSYNC_KB_PATH&quot;)]" />
+                        </If.Then>
+                        <If.Else>
+                          <Assign x:TypeArguments="x:String" DisplayName="Fallback: Desktop default" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_7" To="[ResolvedKbPath]" Value="&quot;C:\Users\USER\Documents\Hackathon\Knowledge Base&quot;" />
+                        </If.Else>
+                      </If>
+                    </ActivityAction>
+                  </Catch>
+                </TryCatch.Catches>
+                <TryCatch.Finally>
+                  <Sequence DisplayName="Finally" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                  </Sequence>
+                </TryCatch.Finally>
+              </TryCatch>
+            </If.Then>
+          </If>
+        </Sequence>
+      </If.Else>
+    </If>
+    <Switch x:TypeArguments="x:String" DisplayName="STEP 3 - Agent Switch" Expression="[in_AgentName]" sap:VirtualizedContainerService.HintSize="510,480" sap2010:WorkflowViewState.IdRef="Switch_1">
+      <Switch.Default>
+        <Sequence DisplayName="Default: Master KB only + warn status" sap:VirtualizedContainerService.HintSize="480,144" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign x:TypeArguments="scg:List(x:String)" DisplayName="Set KbFiles: Master only (default)" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_12" To="[KbFiles]" Value="[New List(Of String) From {Path.Combine(ResolvedKbPath, &quot;00_Process_Context_and_BRD.docx&quot;)}]" />
+          <Assign x:TypeArguments="x:String" DisplayName="Set status: warn unknown agent" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_13" To="[out_KnowledgeLoadStatus]" Value="&quot;warn:unknown_agent_used_master_only&quot;" />
+        </Sequence>
+      </Switch.Default>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <Assign x:TypeArguments="scg:List(x:String)" x:Key="AG_Claim_Analysis_Core" DisplayName="Set KbFiles: AG_Claim_Analysis_Core" sap:VirtualizedContainerService.HintSize="480,24" sap2010:WorkflowViewState.IdRef="Assign_8" To="[KbFiles]" Value="[New List(Of String) From {Path.Combine(ResolvedKbPath, &quot;00_Process_Context_and_BRD.docx&quot;), Path.Combine(ResolvedKbPath, &quot;02_Document_Checklist_by_Category.docx&quot;),Path.Combine(ResolvedKbPath, &quot;03_AG_Claim_Analysis_Core.docx&quot;)}]" />
+      <Assign x:TypeArguments="scg:List(x:String)" x:Key="AG_Fraud_Risk" DisplayName="Set KbFiles: AG_Fraud_Risk" sap:VirtualizedContainerService.HintSize="480,24" sap2010:WorkflowViewState.IdRef="Assign_9" To="[KbFiles]" Value="[New List(Of String) From {Path.Combine(ResolvedKbPath, &quot;00_Process_Context_and_BRD.docx&quot;), Path.Combine(ResolvedKbPath, &quot;01_Business_Rules_and_Gateways.docx&quot;),Path.Combine(ResolvedKbPath, &quot;04_AG_Fraud_Risk.docx&quot;)}]" />
+      <Assign x:TypeArguments="scg:List(x:String)" x:Key="AG_Decision_Support" DisplayName="Set KbFiles: AG_Decision_Support" sap:VirtualizedContainerService.HintSize="480,24" sap2010:WorkflowViewState.IdRef="Assign_10" To="[KbFiles]" Value="[New List(Of String) From {Path.Combine(ResolvedKbPath, &quot;00_Process_Context_and_BRD.docx&quot;), Path.Combine(ResolvedKbPath, &quot;01_Business_Rules_and_Gateways.docx&quot;),Path.Combine(ResolvedKbPath, &quot;05_AG_Decision_Support.docx&quot;)}]" />
+      <Assign x:TypeArguments="scg:List(x:String)" x:Key="AG_Final_Summary" DisplayName="Set KbFiles: AG_Final_Summary" sap:VirtualizedContainerService.HintSize="480,24" sap2010:WorkflowViewState.IdRef="Assign_11" To="[KbFiles]" Value="[New List(Of String) From {Path.Combine(ResolvedKbPath, &quot;00_Process_Context_and_BRD.docx&quot;),Path.Combine(ResolvedKbPath, &quot;06_AG_Final_Summary.docx&quot;)}]" />
+    </Switch>
+    <ForEach x:TypeArguments="x:String" DisplayName="STEP 4 - Load KB Files" sap:VirtualizedContainerService.HintSize="510,567" sap2010:WorkflowViewState.IdRef="ForEach_1" Values="[KbFiles]">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <ActivityAction x:TypeArguments="x:String">
+        <ActivityAction.Argument>
+          <DelegateInArgument x:TypeArguments="x:String" Name="CurrentKbFile" />
+        </ActivityAction.Argument>
+        <If Condition="[File.Exists(CurrentKbFile)]" DisplayName="If: File exists?" sap:VirtualizedContainerService.HintSize="480,471" sap2010:WorkflowViewState.IdRef="If_3">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <If.Then>
+            <Sequence DisplayName="File Found: Invoke and collect" sap:VirtualizedContainerService.HintSize="480,354" sap2010:WorkflowViewState.IdRef="Sequence_5">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <Assign x:TypeArguments="x:String" DisplayName="Init: SingleContent = Empty (null safety)" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_14" To="[SingleContent]" Value="&quot;&quot;" />
+              <ui:InvokeProcess ArgumentsVariable="{x:Null}" OutputArguments="{x:Null}" DisplayName="Invoke Process" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="InvokeProcess_1" ProcessName="WF_Load_Knowledge_File" UsePackage="False">
+                <ui:InvokeProcess.Arguments>
+                  <InArgument x:TypeArguments="x:String" x:Key="in_FilePath">[CurrentKbFile]</InArgument>
+                  <OutArgument x:TypeArguments="x:String" x:Key="out_FileContent">[SingleContent]</OutArgument>
+                </ui:InvokeProcess.Arguments>
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+              </ui:InvokeProcess>
+              <If Condition="[Not String.IsNullOrEmpty(SingleContent) AndAlso Not SingleContent.StartsWith(&quot;[ERROR&quot;)]" DisplayName="If: SingleContent safe and not error?" sap:VirtualizedContainerService.HintSize="450,210" sap2010:WorkflowViewState.IdRef="If_4">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <If.Then>
+                  <Assign x:TypeArguments="x:String" DisplayName="Concat KB content to FileTexts" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_Concat_1" To="[FileTexts]" Value="[FileTexts &amp; &quot;[KB: &quot; &amp; Path.GetFileName(CurrentKbFile) &amp; &quot;]&quot; &amp; Environment.NewLine &amp; SingleContent &amp; Environment.NewLine &amp; &quot;------------------------------------------&quot; &amp; Environment.NewLine]" />
+                </If.Then>
+                <If.Else>
+                  <Assign x:TypeArguments="x:String" DisplayName="Concat KB ERROR to FileTexts" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_Concat_2" To="[FileTexts]" Value="[FileTexts &amp; &quot;[KB ERROR: &quot; &amp; Path.GetFileName(CurrentKbFile) &amp; &quot;]&quot; &amp; Environment.NewLine &amp; &quot;------------------------------------------&quot; &amp; Environment.NewLine]" />
+                </If.Else>
+              </If>
+            </Sequence>
+          </If.Then>
+          <If.Else>
+            <Assign x:TypeArguments="x:String" DisplayName="Concat KB MISSING to FileTexts" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_Concat_3" To="[FileTexts]" Value="[FileTexts &amp; &quot;[KB MISSING: &quot; &amp; Path.GetFileName(CurrentKbFile) &amp; &quot;]&quot; &amp; Environment.NewLine &amp; &quot;------------------------------------------&quot; &amp; Environment.NewLine]" />
+          </If.Else>
+        </If>
+      </ActivityAction>
+    </ForEach>
+    <Assign x:TypeArguments="x:String" DisplayName="STEP 5 - Set RawBundle from FileTexts" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_15" To="[RawBundle]" Value="[FileTexts.TrimEnd()]" />
+    <If Condition="[Not String.IsNullOrEmpty(RawBundle) AndAlso RawBundle.Length &gt; MaxKbChars]" DisplayName="STEP 6 - Apply Size Cap" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="If_5">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Sequence DisplayName="Truncate bundle at MaxKbChars" sap:VirtualizedContainerService.HintSize="480,144" sap2010:WorkflowViewState.IdRef="Sequence_3">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign x:TypeArguments="x:String" DisplayName="Assign: out_KnowledgeBundle = Truncated" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_16" To="[out_KnowledgeBundle]" Value="[RawBundle.Substring(0, MaxKbChars)]" />
+          <Assign x:TypeArguments="x:String" DisplayName="Assign: out_KnowledgeQualityHint = TRUNCATED" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_17" To="[out_KnowledgeQualityHint]" Value="[&quot;TRUNCATED: KB exceeded &quot; &amp; MaxKbChars.ToString() &amp; &quot; chars&quot;]" />
+        </Sequence>
+      </If.Then>
+      <If.Else>
+        <Sequence DisplayName="Bundle within limit" sap:VirtualizedContainerService.HintSize="480,144" sap2010:WorkflowViewState.IdRef="Sequence_4">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign x:TypeArguments="x:String" DisplayName="Assign: out_KnowledgeBundle = If(RawBundle, Empty)" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_18" To="[out_KnowledgeBundle]" Value="[If(RawBundle, &quot;&quot;)]" />
+          <Assign x:TypeArguments="x:String" DisplayName="Assign: out_KnowledgeQualityHint = COMPLETE" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_19" To="[out_KnowledgeQualityHint]" Value="&quot;COMPLETE: All KB content loaded&quot;" />
+        </Sequence>
+      </If.Else>
+    </If>
+    <If Condition="[String.IsNullOrEmpty(out_KnowledgeBundle)]" DisplayName="STEP 7 - Determine Status" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="If_6">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Assign x:TypeArguments="x:String" DisplayName="Set status: failed" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_20" To="[out_KnowledgeLoadStatus]" Value="&quot;failed&quot;" />
+      </If.Then>
+      <If.Else>
+        <If Condition="[Not String.IsNullOrEmpty(RawBundle) AndAlso (RawBundle.Contains(&quot;[KB MISSING&quot;) OrElse RawBundle.Contains(&quot;[KB ERROR&quot;))]" DisplayName="If: RawBundle has MISSING or ERROR markers? - partial" sap:VirtualizedContainerService.HintSize="480,351" sap2010:WorkflowViewState.IdRef="If_7">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <If.Then>
+            <Assign x:TypeArguments="x:String" DisplayName="Set status: partial" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_21" To="[out_KnowledgeLoadStatus]" Value="&quot;partial&quot;" />
+          </If.Then>
+          <If.Else>
+            <If Condition="[out_KnowledgeLoadStatus = &quot;pending&quot;]" DisplayName="If: status still pending? - success" sap:VirtualizedContainerService.HintSize="480,213" sap2010:WorkflowViewState.IdRef="If_8">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <If.Then>
+                <Assign x:TypeArguments="x:String" DisplayName="Set status: success" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_22" To="[out_KnowledgeLoadStatus]" Value="&quot;success&quot;" />
+              </If.Then>
+              <If.Else>
+                <Sequence DisplayName="Else: warn status preserved - no change needed" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Sequence>
+              </If.Else>
+            </If>
+          </If.Else>
+        </If>
+      </If.Else>
+    </If>
+    <If Condition="[Not String.IsNullOrEmpty(in_ClaimFolderPath)]" DisplayName="STEP 8 - Write Knowledge Bundle to File" sap:VirtualizedContainerService.HintSize="510,705" sap2010:WorkflowViewState.IdRef="If_KBFile_1">
+      <If.Then>
+        <Sequence DisplayName="Write KB File" sap:VirtualizedContainerService.HintSize="510,613" sap2010:WorkflowViewState.IdRef="Sequence_KBFile_1">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign x:TypeArguments="x:String" DisplayName="Build kbFilePath" sap:VirtualizedContainerService.HintSize="480,48" sap2010:WorkflowViewState.IdRef="Assign_KBFile_1" To="[kbFilePath]" Value="[Path.Combine(in_ClaimFolderPath, Path.GetFileName(in_ClaimFolderPath) + &quot;_KnowledgeBundle.txt&quot;)]" />
+          <If Condition="[Not String.IsNullOrEmpty(out_KnowledgeBundle)]" DisplayName="If: Bundle not empty?" sap:VirtualizedContainerService.HintSize="480,517" sap2010:WorkflowViewState.IdRef="If_KBFile_2">
+            <If.Then>
+              <TryCatch DisplayName="TryCatch: Write KB file safely" sap:VirtualizedContainerService.HintSize="480,328" sap2010:WorkflowViewState.IdRef="TryCatch_KBFile_1">
+                <TryCatch.Try>
+                  <InvokeMethod DisplayName="WriteAllText - save knowledge bundle" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="InvokeMethod_KBFile_1" MethodName="WriteAllText" TargetType="si:File">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <InArgument x:TypeArguments="x:String">[kbFilePath]</InArgument>
+                    <InArgument x:TypeArguments="x:String">[out_KnowledgeBundle]</InArgument>
+                  </InvokeMethod>
+                </TryCatch.Try>
+                <TryCatch.Catches>
+                  <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_KBFile_1">
+                    <ActivityAction x:TypeArguments="s:Exception">
+                      <ActivityAction.Argument>
+                        <DelegateInArgument x:TypeArguments="s:Exception" Name="exKbWrite" />
+                      </ActivityAction.Argument>
+                      <Sequence DisplayName="KB write failed - ignore" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_KBFile_Fail">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <ui:LogMessage DisplayName="Log KB Write Error" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="LogMessage_KBFile_1" Level="Warn" Message="[&quot;[WF_Load_Agent_Knowledge] Knowledge bundle file write failed: &quot; + exKbWrite.Message]">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </ui:LogMessage>
+                      </Sequence>
+                    </ActivityAction>
+                  </Catch>
+                </TryCatch.Catches>
+                <TryCatch.Finally>
+                  <Sequence DisplayName="Finally" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                  </Sequence>
+                </TryCatch.Finally>
+              </TryCatch>
+            </If.Then>
+            <If.Else>
+              <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+              </Sequence>
+            </If.Else>
+          </If>
+        </Sequence>
+      </If.Then>
+    </If>
+    <If Condition="[Not String.IsNullOrEmpty(in_ClaimFolderPath)]" DisplayName="STEP 9 - Audit Trail" sap:VirtualizedContainerService.HintSize="510,664" sap2010:WorkflowViewState.IdRef="If_Audit_1">
+      <If.Then>
+        <Sequence DisplayName="Write Audit" sap:VirtualizedContainerService.HintSize="510,496" sap2010:WorkflowViewState.IdRef="Sequence_Audit_1">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign x:TypeArguments="x:String" DisplayName="Build auditFilePath" sap:VirtualizedContainerService.HintSize="480,48" sap2010:WorkflowViewState.IdRef="Assign_Audit_1" To="[auditFilePath]" Value="[Path.Combine(in_ClaimFolderPath, Path.GetFileName(in_ClaimFolderPath) + &quot;.txt&quot;)]" />
+          <Assign x:TypeArguments="x:String" DisplayName="Build auditEntry" sap:VirtualizedContainerService.HintSize="480,48" sap2010:WorkflowViewState.IdRef="Assign_Audit_2" To="[auditEntry]" Value="[Environment.NewLine + &quot;------------------------------------------&quot; + Environment.NewLine + &quot;WF_Load_Agent_Knowledge&quot; + Environment.NewLine + &quot;------------------------------------------&quot; + Environment.NewLine + &quot;in_AgentName : &quot; + in_AgentName + Environment.NewLine + &quot;out_KnowledgeBundle : &quot; + out_KnowledgeBundle + Environment.NewLine+ &quot;out_KnowledgeLoadStatus : &quot; + out_KnowledgeLoadStatus + Environment.NewLine + &quot;out_KnowledgeQualityHint : &quot; + out_KnowledgeQualityHint + Environment.NewLine + &quot;knowledgeBundleLength : &quot; + If(out_KnowledgeBundle IsNot Nothing, out_KnowledgeBundle.Length.ToString(), &quot;0&quot;) + Environment.NewLine + &quot;timestamp : &quot; + Now.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;) + Environment.NewLine + Environment.NewLine]" />
+          <TryCatch DisplayName="TryCatch Audit Write" sap:VirtualizedContainerService.HintSize="480,352" sap2010:WorkflowViewState.IdRef="TryCatch_Audit_1">
+            <TryCatch.Try>
+              <InvokeMethod DisplayName="Append to audit file" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="InvokeMethod_Audit_1" MethodName="AppendAllText" TargetType="si:File">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <InArgument x:TypeArguments="x:String">[auditFilePath]</InArgument>
+                <InArgument x:TypeArguments="x:String">[auditEntry]</InArgument>
+              </InvokeMethod>
+            </TryCatch.Try>
+            <TryCatch.Catches>
+              <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_Audit_1">
+                <ActivityAction x:TypeArguments="s:Exception">
+                  <ActivityAction.Argument>
+                    <DelegateInArgument x:TypeArguments="s:Exception" Name="auditEx" />
+                  </ActivityAction.Argument>
+                  <Sequence DisplayName="Audit write failed - ignore" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_Audit_Fail">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <ui:LogMessage DisplayName="Log Audit Error" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="LogMessage_Audit_1" Level="Warn" Message="[&quot;[WF_Load_Agent_Knowledge] Audit write failed: &quot; + auditEx.Message]">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </ui:LogMessage>
+                  </Sequence>
+                </ActivityAction>
+              </Catch>
+            </TryCatch.Catches>
+          </TryCatch>
+        </Sequence>
+      </If.Then>
+    </If>
+    <ui:LogMessage DisplayName="Log Knowledge Load Result" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;WF_Load_Agent_Knowledge: Agent=&quot; + in_AgentName + &quot;, Status=&quot; + out_KnowledgeLoadStatus + &quot;, Quality=&quot; + out_KnowledgeQualityHint]">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:LogMessage>
+  </Sequence>
+</Activity>

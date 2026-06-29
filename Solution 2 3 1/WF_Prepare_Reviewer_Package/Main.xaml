@@ -1,0 +1,209 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib"
+ xmlns:si="clr-namespace:System.IO;assembly=System.Private.CoreLib"
+ xmlns:ui="http://schemas.uipath.com/workflow/activities"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_ClaimId" Type="InArgument(x:String)" />
+    <x:Property Name="in_ClaimFolderPath" Type="InArgument(x:String)" />
+    <x:Property Name="in_ValidationResults" Type="InArgument(x:String)" />
+    <x:Property Name="in_ValidationPassed" Type="InArgument(x:Boolean)" />
+    <x:Property Name="in_AnalysisResult" Type="InArgument(x:String)" />
+    <x:Property Name="in_FraudResult" Type="InArgument(x:String)" />
+    <x:Property Name="in_DecisionSupport" Type="InArgument(x:String)" />
+    <x:Property Name="out_ReviewerPackage" Type="OutArgument(x:String)" />
+  </x:Members>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="23">
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>Newtonsoft.Json</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>UiPath.Core</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="16">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>netstandard</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.Net.Primitives</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Runtime</AssemblyReference>
+      <AssemblyReference>System.Runtime.InteropServices</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="WF_Prepare_Reviewer_Package" sap:VirtualizedContainerService.HintSize="440,1600" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="scg:List(x:String)" Name="PackageParts" />
+      <Variable x:TypeArguments="x:String" Name="AuditFilePath" />
+      <Variable x:TypeArguments="x:String" Name="AuditEntry" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:ManualTrigger Result="{x:Null}" DisplayName="Manual Trigger" sap2010:WorkflowViewState.IdRef="ManualTrigger_1" />
+    <Assign DisplayName="Init: out_ReviewerPackage = Empty" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[out_ReviewerPackage]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[ "" ]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="Init: PackageParts = New List(Of String)" sap2010:WorkflowViewState.IdRef="Assign_2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="scg:List(x:String)">[PackageParts]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="scg:List(x:String)">[New List(Of String)()]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:LogMessage DisplayName="Log: Workflow started" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;WF_PrepareReviewerPackage started - ClaimId: &quot; + If(Not String.IsNullOrEmpty(in_ClaimId), in_ClaimId, &quot;(none)&quot;)]" />
+    <If Condition="[Not String.IsNullOrEmpty(in_ClaimId)]" DisplayName="STEP 2 — Add Claim ID" sap2010:WorkflowViewState.IdRef="If_1">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <InvokeMethod DisplayName="Add: ClaimID" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" MethodName="Add">
+          <InvokeMethod.TargetObject>
+            <InArgument x:TypeArguments="scg:List(x:String)">[PackageParts]</InArgument>
+          </InvokeMethod.TargetObject>
+          <InArgument x:TypeArguments="x:String">["ClaimID: " + in_ClaimId]</InArgument>
+        </InvokeMethod>
+      </If.Then>
+    </If>
+    <InvokeMethod DisplayName="STEP 3 — Add Validation Context" sap2010:WorkflowViewState.IdRef="InvokeMethod_2" MethodName="Add">
+      <InvokeMethod.TargetObject>
+        <InArgument x:TypeArguments="scg:List(x:String)">[PackageParts]</InArgument>
+      </InvokeMethod.TargetObject>
+      <InArgument x:TypeArguments="x:String">["Validation: " + If(Not String.IsNullOrEmpty(in_ValidationResults), in_ValidationResults, "NotAvailable")]</InArgument>
+    </InvokeMethod>
+    <InvokeMethod DisplayName="Add: ValidationPassed" sap2010:WorkflowViewState.IdRef="InvokeMethod_3" MethodName="Add">
+      <InvokeMethod.TargetObject>
+        <InArgument x:TypeArguments="scg:List(x:String)">[PackageParts]</InArgument>
+      </InvokeMethod.TargetObject>
+      <InArgument x:TypeArguments="x:String">["ValidationPassed: " + If(in_ValidationPassed, "True", "False")]</InArgument>
+    </InvokeMethod>
+    <InvokeMethod DisplayName="STEP 4 — Add Analysis Context" sap2010:WorkflowViewState.IdRef="InvokeMethod_4" MethodName="Add">
+      <InvokeMethod.TargetObject>
+        <InArgument x:TypeArguments="scg:List(x:String)">[PackageParts]</InArgument>
+      </InvokeMethod.TargetObject>
+      <InArgument x:TypeArguments="x:String">["Analysis: " + If(Not String.IsNullOrEmpty(in_AnalysisResult), in_AnalysisResult, "NotAvailable")]</InArgument>
+    </InvokeMethod>
+    <InvokeMethod DisplayName="STEP 5 — Add Fraud Context" sap2010:WorkflowViewState.IdRef="InvokeMethod_5" MethodName="Add">
+      <InvokeMethod.TargetObject>
+        <InArgument x:TypeArguments="scg:List(x:String)">[PackageParts]</InArgument>
+      </InvokeMethod.TargetObject>
+      <InArgument x:TypeArguments="x:String">["FraudRisk: " + If(Not String.IsNullOrEmpty(in_FraudResult), in_FraudResult, "NotAvailable")]</InArgument>
+    </InvokeMethod>
+    <InvokeMethod DisplayName="STEP 6 — Add Recommendation" sap2010:WorkflowViewState.IdRef="InvokeMethod_6" MethodName="Add">
+      <InvokeMethod.TargetObject>
+        <InArgument x:TypeArguments="scg:List(x:String)">[PackageParts]</InArgument>
+      </InvokeMethod.TargetObject>
+      <InArgument x:TypeArguments="x:String">["Recommendation: " + If(Not String.IsNullOrEmpty(in_DecisionSupport), in_DecisionSupport, "NotAvailable")]</InArgument>
+    </InvokeMethod>
+    <Assign DisplayName="STEP 8 — Build Reviewer Package" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[out_ReviewerPackage]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[If(PackageParts IsNot Nothing AndAlso PackageParts.Count &gt; 0, String.Join(Environment.NewLine, PackageParts), "ReviewerPackageEmpty")]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <If Condition="[String.IsNullOrEmpty(out_ReviewerPackage)]" DisplayName="STEP 9 — Final Safety" sap2010:WorkflowViewState.IdRef="If_2">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Assign DisplayName="Safety: out_ReviewerPackage = Fallback" sap2010:WorkflowViewState.IdRef="Assign_4">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[out_ReviewerPackage]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">"ReviewerPackageGenerationFailed"</InArgument>
+          </Assign.Value>
+        </Assign>
+      </If.Then>
+    </If>
+    <ui:LogMessage DisplayName="Log: Package complete" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;WF_PrepareReviewerPackage complete - PackageReady=&quot; + If(Not String.IsNullOrEmpty(out_ReviewerPackage), &quot;True&quot;, &quot;False&quot;)]" />
+    <Assign DisplayName="STEP 10 — Build AuditFilePath" sap2010:WorkflowViewState.IdRef="Assign_5">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[AuditFilePath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrEmpty(in_ClaimFolderPath), System.IO.Path.Combine(in_ClaimFolderPath, System.IO.Path.GetFileName(in_ClaimFolderPath) + ".txt"), "")]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="STEP 10 — Build AuditEntry" sap2010:WorkflowViewState.IdRef="Assign_6">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[AuditEntry]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">["------------------------------------------" + Environment.NewLine + "WF_Prepare_Reviewer_Package" + Environment.NewLine + "------------------------------------------" + Environment.NewLine + "reviewer_package_length : " + If(out_ReviewerPackage IsNot Nothing, out_ReviewerPackage.Length.ToString(), "0") + Environment.NewLine + "validation_passed : " + in_ValidationPassed.ToString() + Environment.NewLine + "timestamp : " + Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine + Environment.NewLine]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <If Condition="[Not String.IsNullOrEmpty(AuditFilePath)]" DisplayName="STEP 10 — Append audit if path valid" sap2010:WorkflowViewState.IdRef="If_3">
+      <If.Then>
+        <TryCatch DisplayName="TryCatch: Append audit safely" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+          <TryCatch.Try>
+            <InvokeMethod DisplayName="Append to audit file" sap2010:WorkflowViewState.IdRef="InvokeMethod_7" MethodName="AppendAllText" TargetType="si:File">
+              <InArgument x:TypeArguments="x:String">[AuditFilePath]</InArgument>
+              <InArgument x:TypeArguments="x:String">[AuditEntry]</InArgument>
+            </InvokeMethod>
+          </TryCatch.Try>
+          <TryCatch.Catches>
+            <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_1">
+              <ActivityAction x:TypeArguments="s:Exception">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="s:Exception" Name="ExAudit" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Audit append failed — log and ignore" sap2010:WorkflowViewState.IdRef="Sequence_2">
+                  <ui:LogMessage DisplayName="Log: Audit append failed" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Warn" Message="[&quot;Audit append failed: &quot; + ExAudit.Message]" />
+                </Sequence>
+              </ActivityAction>
+            </Catch>
+          </TryCatch.Catches>
+        </TryCatch>
+      </If.Then>
+    </If>
+  </Sequence>
+</Activity>

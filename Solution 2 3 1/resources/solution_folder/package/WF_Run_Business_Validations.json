@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Run_Business_Validations",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "8d09f95f-06f1-4a50-b6e6-8a40c733c498",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "WF_Run_Business_Validations",
+      "description": null
+    },
+    "locks": [],
+    "key": "8f7f9ccc-b06a-45e7-9654-f4752d47b51a"
+  }
+}

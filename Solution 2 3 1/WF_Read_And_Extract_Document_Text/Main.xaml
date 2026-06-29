@@ -1,0 +1,1051 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" this:Main.in_ExpectedFileTypes="pdf,docx" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:s="clr-namespace:System;assembly=System.Private.CoreLib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:si="clr-namespace:System.IO;assembly=System.Private.CoreLib" xmlns:this="clr-namespace:" xmlns:uasj="clr-namespace:UiPath.Activities.System.Jobs;assembly=UiPath.System.Activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_ClaimFolderPath" Type="InArgument(x:String)" />
+    <x:Property Name="in_ClaimId" Type="InArgument(x:String)" />
+    <x:Property Name="in_ExpectedFileTypes" Type="InArgument(x:String)" />
+    <x:Property Name="out_DocumentTextBundle" Type="OutArgument(x:String)" />
+    <x:Property Name="out_DocumentNames" Type="OutArgument(x:String)" />
+    <x:Property Name="out_ExtractedData" Type="OutArgument(x:String)" />
+    <x:Property Name="out_ExtractionSuccess" Type="OutArgument(x:Boolean)" />
+    <x:Property Name="out_ExtractionNotes" Type="OutArgument(x:String)" />
+  </x:Members>
+  <this:Main.out_DocumentTextBundle>
+    <OutArgument x:TypeArguments="x:String" />
+  </this:Main.out_DocumentTextBundle>
+  <this:Main.out_DocumentNames>
+    <OutArgument x:TypeArguments="x:String" />
+  </this:Main.out_DocumentNames>
+  <this:Main.out_ExtractedData>
+    <OutArgument x:TypeArguments="x:String" />
+  </this:Main.out_ExtractedData>
+  <this:Main.out_ExtractionSuccess>
+    <OutArgument x:TypeArguments="x:Boolean" />
+  </this:Main.out_ExtractionSuccess>
+  <this:Main.out_ExtractionNotes>
+    <OutArgument x:TypeArguments="x:String" />
+  </this:Main.out_ExtractionNotes>
+  <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="44">
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Text.RegularExpressions</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>UiPath.Activities.System.Jobs</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>Newtonsoft.Json</x:String>
+      <x:String>Newtonsoft.Json.Linq</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Reflection</x:String>
+      <x:String>UiPath.Platform.ResourceHandling</x:String>
+      <x:String>UiPath.Core.Activities.Storage</x:String>
+      <x:String>UiPath.Core.Activities.Orchestrator</x:String>
+      <x:String>System.Linq.Expressions</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="60">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>netstandard</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Runtime</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>Newtonsoft.Json</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>System.Collections.NonGeneric</AssemblyReference>
+      <AssemblyReference>System.Reflection.DispatchProxy</AssemblyReference>
+      <AssemblyReference>System.Reflection.TypeExtensions</AssemblyReference>
+      <AssemblyReference>System.Reflection.Metadata</AssemblyReference>
+      <AssemblyReference>UiPath.Platform</AssemblyReference>
+      <AssemblyReference>System.Configuration.ConfigurationManager</AssemblyReference>
+      <AssemblyReference>System.Security.Permissions</AssemblyReference>
+      <AssemblyReference>System.Console</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.Private.Uri</AssemblyReference>
+      <AssemblyReference>System.Linq.Expressions</AssemblyReference>
+      <AssemblyReference>System.Private.DataContractSerialization</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="WF_Read_And_Extract_Document_Text" sap:VirtualizedContainerService.HintSize="992,6300" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="scg:List(x:String)" Name="filesList" />
+      <Variable x:TypeArguments="x:String" Name="currentFileName" />
+      <Variable x:TypeArguments="x:String" Name="currentExtension" />
+      <Variable x:TypeArguments="x:String" Name="currentExtractedText" />
+      <Variable x:TypeArguments="scg:List(x:String)" Name="allTextParts" />
+      <Variable x:TypeArguments="scg:List(x:String)" Name="allDocNames" />
+      <Variable x:TypeArguments="scg:List(x:String)" Name="notesLog" />
+      <Variable x:TypeArguments="x:String" Name="parsedAmount" />
+      <Variable x:TypeArguments="x:String" Name="parsedDate" />
+      <Variable x:TypeArguments="x:String" Name="parsedIdentifier" />
+      <Variable x:TypeArguments="x:String" Name="rxAmount" />
+      <Variable x:TypeArguments="x:String" Name="rxDate" />
+      <Variable x:TypeArguments="x:String" Name="rxId" />
+      <Variable x:TypeArguments="scg:List(x:String)" Name="supportedExtensions" />
+      <Variable x:TypeArguments="x:String" Name="joinedNotes" />
+      <Variable x:TypeArguments="x:String" Name="pdfText" />
+      <Variable x:TypeArguments="x:String" Name="pdfStatus" />
+      <Variable x:TypeArguments="x:String" Name="pdfNotes" />
+      <Variable x:TypeArguments="x:Boolean" Name="earlyExit" />
+      <Variable x:TypeArguments="x:Boolean" Name="textOk" />
+      <Variable x:TypeArguments="x:String" Name="auditFilePath" />
+      <Variable x:TypeArguments="x:String" Name="auditEntry" />
+      <Variable x:TypeArguments="x:String" Name="textFilePath" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Sequence DisplayName="STEP 1 â€” Initialize Outputs and Variables" sap:VirtualizedContainerService.HintSize="570,696" sap2010:WorkflowViewState.IdRef="Sequence_2">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <Assign DisplayName="Init: out_DocumentTextBundle" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_3">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[out_DocumentTextBundle]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[""]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: out_DocumentNames" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_4">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[out_DocumentNames]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[""]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: out_ExtractedData" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_5">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[out_ExtractedData]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[""]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: out_ExtractionSuccess = False" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_6">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:Boolean">[out_ExtractionSuccess]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: out_ExtractionNotes" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_7">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[out_ExtractionNotes]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[""]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: allTextParts" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_8">
+        <Assign.To>
+          <OutArgument x:TypeArguments="scg:List(x:String)">[allTextParts]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="scg:List(x:String)">[New List(Of String)()]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: allDocNames" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_9">
+        <Assign.To>
+          <OutArgument x:TypeArguments="scg:List(x:String)">[allDocNames]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="scg:List(x:String)">[New List(Of String)()]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: notesLog" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_10">
+        <Assign.To>
+          <OutArgument x:TypeArguments="scg:List(x:String)">[notesLog]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="scg:List(x:String)">[New List(Of String)()]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: parsedAmount" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_11">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[parsedAmount]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[""]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: parsedDate" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_12">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[parsedDate]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[""]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: parsedIdentifier" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_13">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[parsedIdentifier]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">[""]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: earlyExit = False" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_14">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:Boolean">[earlyExit]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <Assign DisplayName="Init: textOk = False" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_15">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:Boolean">[textOk]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:Boolean">[False]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+    </Sequence>
+    <If Condition="[String.IsNullOrEmpty(in_ClaimFolderPath)]" DisplayName="STEP 2 â€” Guard: Claim Folder Path Empty?" sap:VirtualizedContainerService.HintSize="570,312" sap2010:WorkflowViewState.IdRef="If_10">
+      <If.Then>
+        <Sequence DisplayName="Exit: Path Missing" sap:VirtualizedContainerService.HintSize="480,144" sap2010:WorkflowViewState.IdRef="Sequence_3">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="Set: out_ExtractionNotes (path missing)" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_24">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_ExtractionNotes]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">["Claim folder path missing"]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <Assign DisplayName="Set: earlyExit = True" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_25">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[earlyExit]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+        </Sequence>
+      </If.Then>
+    </If>
+    <Assign DisplayName="STEP 3 â€” Resolve Supported Extensions" sap:VirtualizedContainerService.HintSize="570,48" sap2010:WorkflowViewState.IdRef="Assign_26">
+      <Assign.To>
+        <OutArgument x:TypeArguments="scg:List(x:String)">[supportedExtensions]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="scg:List(x:String)">[If(Not String.IsNullOrEmpty(in_ExpectedFileTypes), in_ExpectedFileTypes.ToLower().Split(","c).ToList(), New List(Of String)(New String() {"pdf","txt","docx","jpg","jpeg","png"}))]</InArgument>
+      </Assign.Value>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </Assign>
+    <Assign DisplayName="STEP 4 â€” Enumerate Supported Files (safe)" sap:VirtualizedContainerService.HintSize="570,48" sap2010:WorkflowViewState.IdRef="Assign_27">
+      <Assign.To>
+        <OutArgument x:TypeArguments="scg:List(x:String)">[filesList]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="scg:List(x:String)">[If(Not String.IsNullOrEmpty(in_ClaimFolderPath) AndAlso System.IO.Directory.Exists(in_ClaimFolderPath), System.IO.Directory.GetFiles(in_ClaimFolderPath).Where(Function(f) supportedExtensions.Contains(System.IO.Path.GetExtension(f).TrimStart("."c).ToLower())).ToList(), New List(Of String)())]</InArgument>
+      </Assign.Value>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </Assign>
+    <If Condition="[Not earlyExit AndAlso (Not System.IO.Directory.Exists(in_ClaimFolderPath) OrElse filesList.Count = 0)]" DisplayName="STEP 5 â€” Guard: Folder Missing or No Supported Files?" sap:VirtualizedContainerService.HintSize="570,312" sap2010:WorkflowViewState.IdRef="If_11">
+      <If.Then>
+        <Sequence DisplayName="Exit: Folder or Files Missing" sap:VirtualizedContainerService.HintSize="480,144" sap2010:WorkflowViewState.IdRef="Sequence_4">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="Set: out_ExtractionNotes (folder/files missing)" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_28">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_ExtractionNotes]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(Not System.IO.Directory.Exists(in_ClaimFolderPath), "Folder not found on disk: " + in_ClaimFolderPath, "No supported files found in: " + in_ClaimFolderPath)]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <Assign DisplayName="Set: earlyExit = True (folder or files missing)" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_29">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[earlyExit]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[True]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+        </Sequence>
+      </If.Then>
+    </If>
+    <If Condition="[Not earlyExit]" DisplayName="STEP 6-8 â€” Process Files (Not earlyExit)" sap:VirtualizedContainerService.HintSize="570,3682" sap2010:WorkflowViewState.IdRef="If_19">
+      <If.Then>
+        <Sequence DisplayName="STEPS 6-8 â€” Extract, Aggregate, Output" sap:VirtualizedContainerService.HintSize="570,3590" sap2010:WorkflowViewState.IdRef="Sequence_8">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ForEach x:TypeArguments="x:String" DisplayName="STEP 6 â€” For Each File: Extract Text" sap:VirtualizedContainerService.HintSize="540,3394" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[filesList]">
+            <ActivityAction x:TypeArguments="x:String">
+              <ActivityAction.Argument>
+                <DelegateInArgument x:TypeArguments="x:String" Name="currentFilePath" />
+              </ActivityAction.Argument>
+              <Sequence DisplayName="Process File" sap:VirtualizedContainerService.HintSize="540,3322" sap2010:WorkflowViewState.IdRef="Sequence_7">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <Assign DisplayName="Assign: currentFileName" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_30">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[currentFileName]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[System.IO.Path.GetFileName(currentFilePath)]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <Assign DisplayName="Assign: currentExtension" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_31">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[currentExtension]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[System.IO.Path.GetExtension(currentFilePath).TrimStart("."c).ToLower()]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <Assign DisplayName="Assign: Reset currentExtractedText" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_32">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[currentExtractedText]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[""]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <Assign DisplayName="Init: pdfText" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_33">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[pdfText]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[""]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <Assign DisplayName="Init: pdfStatus" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_34">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[pdfStatus]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[""]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <Assign DisplayName="Init: pdfNotes" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_35">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[pdfNotes]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[""]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <AddToCollection x:TypeArguments="x:String" Collection="[allDocNames]" DisplayName="Track: Add to allDocNames" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="AddToCollection`1_1" Item="[currentFileName]">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </AddToCollection>
+                <If Condition="[currentExtension = &quot;txt&quot;]" DisplayName="Dispatch: TXT?" sap:VirtualizedContainerService.HintSize="510,469" sap2010:WorkflowViewState.IdRef="If_12">
+                  <If.Then>
+                    <TryCatch DisplayName="TryCatch: Read TXT safely" sap:VirtualizedContainerService.HintSize="480,280" sap2010:WorkflowViewState.IdRef="TryCatch_3">
+                      <TryCatch.Try>
+                        <Assign DisplayName="TXT: Read with File.ReadAllText" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_36">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:String">[currentExtractedText]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:String">[System.IO.File.ReadAllText(currentFilePath)]</InArgument>
+                          </Assign.Value>
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </Assign>
+                      </TryCatch.Try>
+                      <TryCatch.Catches>
+                        <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_1">
+                          <ActivityAction x:TypeArguments="s:Exception">
+                            <ActivityAction.Argument>
+                              <DelegateInArgument x:TypeArguments="s:Exception" Name="exTxt" />
+                            </ActivityAction.Argument>
+                            <AddToCollection x:TypeArguments="x:String" Collection="[notesLog]" DisplayName="Note: TXT read error" sap:VirtualizedContainerService.HintSize="480,24" sap2010:WorkflowViewState.IdRef="AddToCollection`1_2" Item="[&quot;TXT ERROR [&quot; + currentFileName + &quot;]: &quot; + If(exTxt IsNot Nothing AndAlso exTxt.Message IsNot Nothing, exTxt.Message, &quot;Unknown error&quot;)]">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                            </AddToCollection>
+                          </ActivityAction>
+                        </Catch>
+                      </TryCatch.Catches>
+                      <TryCatch.Finally>
+                        <Sequence DisplayName="Finally" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </Sequence>
+                      </TryCatch.Finally>
+                    </TryCatch>
+                  </If.Then>
+                  <If.Else>
+                    <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_14">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </Sequence>
+                  </If.Else>
+                </If>
+                <If Condition="[currentExtension = &quot;pdf&quot;]" DisplayName="Dispatch: PDF?" sap:VirtualizedContainerService.HintSize="510,1138" sap2010:WorkflowViewState.IdRef="If_15">
+                  <If.Then>
+                    <TryCatch DisplayName="TryCatch: PDF extraction safely" sap:VirtualizedContainerService.HintSize="510,949" sap2010:WorkflowViewState.IdRef="TryCatch_6">
+                      <TryCatch.Try>
+                        <Sequence DisplayName="PDF: Invoke AG_PDF_Extraction" sap:VirtualizedContainerService.HintSize="510,666" sap2010:WorkflowViewState.IdRef="Sequence_5">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign DisplayName="Construct bucket file reference" sap:VirtualizedContainerService.HintSize="480,48" sap2010:WorkflowViewState.IdRef="Assign_bucketRef">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:String">[currentFilePath]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:String">[in_ClaimId + "/" + currentFileName]</InArgument>
+                            </Assign.Value>
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                          </Assign>
+                          <uasj:RunJob DisplayName="PDF Branch â€” Invoke AG_PDF_Extraction" sap:VirtualizedContainerService.HintSize="480,48" sap2010:WorkflowViewState.IdRef="RunJob_1" ProcessName="[&quot;AG_PDF_Extraction&quot;]">
+                            <uasj:RunJob.Arguments>
+                              <InArgument x:TypeArguments="x:String" x:Key="claim_id">[in_ClaimId]</InArgument>
+                              <InArgument x:TypeArguments="x:String" x:Key="pdf_file_name">[currentFileName]</InArgument>
+                              <InArgument x:TypeArguments="x:String" x:Key="pdf_file_path_or_reference">[currentFilePath]</InArgument>
+                              <InArgument x:TypeArguments="x:String" x:Key="claim_folder_context">[in_ClaimFolderPath]</InArgument>
+                              <InArgument x:TypeArguments="x:String" x:Key="extraction_request_notes">"PDF extraction requested from WF_Read_And_Extract_Document_Text"</InArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="pdf_text">[pdfText]</OutArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="pdf_status">[pdfStatus]</OutArgument>
+                              <OutArgument x:TypeArguments="x:String" x:Key="pdf_notes">[pdfNotes]</OutArgument>
+                            </uasj:RunJob.Arguments>
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                          </uasj:RunJob>
+                          <Assign DisplayName="PDF: Merge pdfText into currentExtractedText" sap:VirtualizedContainerService.HintSize="480,48" sap2010:WorkflowViewState.IdRef="Assign_37">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:String">[currentExtractedText]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrWhiteSpace(pdfText), pdfText, "")]</InArgument>
+                            </Assign.Value>
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                          </Assign>
+                          <If Condition="[Not String.IsNullOrEmpty(pdfNotes)]" DisplayName="PDF: Log notes" sap:VirtualizedContainerService.HintSize="480,237" sap2010:WorkflowViewState.IdRef="If_13">
+                            <If.Then>
+                              <AddToCollection x:TypeArguments="x:String" Collection="[notesLog]" DisplayName="Note: PDF notes" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="AddToCollection`1_3" Item="[&quot;PDF [&quot; + currentFileName + &quot;]: &quot; + pdfNotes]">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </AddToCollection>
+                            </If.Then>
+                            <If.Else>
+                              <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </Sequence>
+                            </If.Else>
+                          </If>
+                          <If Condition="[pdfStatus = &quot;failed&quot;]" DisplayName="PDF: Log error" sap:VirtualizedContainerService.HintSize="480,237" sap2010:WorkflowViewState.IdRef="If_14">
+                            <If.Then>
+                              <AddToCollection x:TypeArguments="x:String" Collection="[notesLog]" DisplayName="Note: PDF failed" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="AddToCollection`1_4" Item="[&quot;PDF ERROR [&quot; + currentFileName + &quot;]&quot;]">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </AddToCollection>
+                            </If.Then>
+                            <If.Else>
+                              <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </Sequence>
+                            </If.Else>
+                          </If>
+                        </Sequence>
+                      </TryCatch.Try>
+                      <TryCatch.Catches>
+                        <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_3">
+                          <ActivityAction x:TypeArguments="s:Exception">
+                            <ActivityAction.Argument>
+                              <DelegateInArgument x:TypeArguments="s:Exception" Name="exPdf" />
+                            </ActivityAction.Argument>
+                            <Sequence DisplayName="PDF agent failed â€” log and continue" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <AddToCollection x:TypeArguments="x:String" Collection="[notesLog]" DisplayName="Note: PDF agent unavailable" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="AddToCollection`1_10" Item="[&quot;PDF AGENT UNAVAILABLE [&quot; + currentFileName + &quot;]: &quot; + If(exPdf IsNot Nothing AndAlso exPdf.Message IsNot Nothing, exPdf.Message, &quot;Unknown error&quot;)]">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </AddToCollection>
+                            </Sequence>
+                          </ActivityAction>
+                        </Catch>
+                      </TryCatch.Catches>
+                      <TryCatch.Finally>
+                        <Sequence DisplayName="Finally" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </Sequence>
+                      </TryCatch.Finally>
+                    </TryCatch>
+                  </If.Then>
+                  <If.Else>
+                    <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_18">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </Sequence>
+                  </If.Else>
+                </If>
+                <If Condition="[currentExtension = &quot;jpg&quot; OrElse currentExtension = &quot;jpeg&quot; OrElse currentExtension = &quot;png&quot;]" DisplayName="Dispatch: JPG/JPEG/PNG?" sap:VirtualizedContainerService.HintSize="510,237" sap2010:WorkflowViewState.IdRef="If_16">
+                  <If.Then>
+                    <AddToCollection x:TypeArguments="x:String" Collection="[notesLog]" DisplayName="Note: OCR unavailable" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="AddToCollection`1_5" Item="[&quot;OCR package/activity unavailable: &quot; + currentFileName]">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </AddToCollection>
+                  </If.Then>
+                  <If.Else>
+                    <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_19">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </Sequence>
+                  </If.Else>
+                </If>
+                <If Condition="[currentExtension = &quot;docx&quot;]" DisplayName="Dispatch: DOCX?" sap:VirtualizedContainerService.HintSize="510,565" sap2010:WorkflowViewState.IdRef="If_17">
+                  <If.Then>
+                    <TryCatch DisplayName="TryCatch: Read DOCX safely" sap:VirtualizedContainerService.HintSize="480,376" sap2010:WorkflowViewState.IdRef="TryCatch_4">
+                      <TryCatch.Try>
+                        <Assign DisplayName="DOCX: Attempt File.ReadAllText" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="Assign_38">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:String">[currentExtractedText]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:String">[System.IO.File.ReadAllText(currentFilePath)]</InArgument>
+                          </Assign.Value>
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </Assign>
+                      </TryCatch.Try>
+                      <TryCatch.Catches>
+                        <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch`1_2">
+                          <ActivityAction x:TypeArguments="s:Exception">
+                            <ActivityAction.Argument>
+                              <DelegateInArgument x:TypeArguments="s:Exception" Name="exDocx" />
+                            </ActivityAction.Argument>
+                            <Sequence DisplayName="DOCX: Not supported" sap:VirtualizedContainerService.HintSize="480,144" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <Assign DisplayName="DOCX: Clear extracted text" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="Assign_39">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:String">[currentExtractedText]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:String">[""]</InArgument>
+                                </Assign.Value>
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </Assign>
+                              <AddToCollection x:TypeArguments="x:String" Collection="[notesLog]" DisplayName="Note: DOCX not supported" sap:VirtualizedContainerService.HintSize="450,48" sap2010:WorkflowViewState.IdRef="AddToCollection`1_6" Item="[&quot;DOCX not supported: &quot; + currentFileName]">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </AddToCollection>
+                            </Sequence>
+                          </ActivityAction>
+                        </Catch>
+                      </TryCatch.Catches>
+                    </TryCatch>
+                  </If.Then>
+                  <If.Else>
+                    <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_20">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </Sequence>
+                  </If.Else>
+                </If>
+                <If Condition="[currentExtension &lt;&gt; &quot;txt&quot; AndAlso currentExtension &lt;&gt; &quot;pdf&quot; AndAlso currentExtension &lt;&gt; &quot;jpg&quot; AndAlso currentExtension &lt;&gt; &quot;jpeg&quot; AndAlso currentExtension &lt;&gt; &quot;png&quot; AndAlso currentExtension &lt;&gt; &quot;docx&quot;]" DisplayName="Dispatch: Unsupported Extension?" sap:VirtualizedContainerService.HintSize="510,237" sap2010:WorkflowViewState.IdRef="If_18">
+                  <If.Then>
+                    <AddToCollection x:TypeArguments="x:String" Collection="[notesLog]" DisplayName="Note: Unsupported â€” Skip" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="AddToCollection`1_7" Item="[&quot;SKIPPED [unsupported]: &quot; + currentFileName]">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </AddToCollection>
+                  </If.Then>
+                  <If.Else>
+                    <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_21">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                    </Sequence>
+                  </If.Else>
+                </If>
+                <Assign DisplayName="Assign: textOk (quality gate)" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_40">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:Boolean">[textOk]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:Boolean">[Not String.IsNullOrWhiteSpace(currentExtractedText) AndAlso currentExtractedText.Trim().Length &gt; 20]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <AddToCollection x:TypeArguments="x:String" Collection="[allTextParts]" DisplayName="Bundle: Add File Text Block" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="AddToCollection`1_8" Item="[If(textOk, &quot;[FILE: &quot; + currentFileName + &quot;]&quot; + Environment.NewLine + currentExtractedText.Trim(), &quot;&quot;)]">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </AddToCollection>
+                <AddToCollection x:TypeArguments="x:String" Collection="[notesLog]" DisplayName="Note: Low/Empty Text" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="AddToCollection`1_9" Item="[If(Not textOk, &quot;LOW/EMPTY TEXT: &quot; + currentFileName, &quot;&quot;)]">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </AddToCollection>
+                <Assign DisplayName="Regex: Match Amount" sap:VirtualizedContainerService.HintSize="510,48" sap2010:WorkflowViewState.IdRef="Assign_41">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[rxAmount]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[If(textOk, System.Text.RegularExpressions.Regex.Match(currentExtractedText, "[$]\d{1,3}(?:,\d{3})*(?:\.\d{2})?|(?&lt;!\w)\d{1,3}(?:,\d{3})+\b|(?&lt;!\w)\d+\.\d{2}\b").Value, "")]</InArgument>
+                  </Assign.Value>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Assign>
+                <Assign DisplayName="Capture: parsedAmount (first match only)" sap2010:WorkflowViewState.IdRef="Assign_42">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[parsedAmount]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrEmpty(rxAmount) AndAlso String.IsNullOrEmpty(parsedAmount), rxAmount, parsedAmount)]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign DisplayName="Regex: Match Date" sap2010:WorkflowViewState.IdRef="Assign_43">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[rxDate]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[If(textOk, System.Text.RegularExpressions.Regex.Match(currentExtractedText, "\b\d{4}-\d{2}-\d{2}\b|\b\d{1,2}/\d{1,2}/\d{4}\b").Value, "")]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign DisplayName="Capture: parsedDate (first match only)" sap2010:WorkflowViewState.IdRef="Assign_44">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[parsedDate]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrEmpty(rxDate) AndAlso String.IsNullOrEmpty(parsedDate), rxDate, parsedDate)]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign DisplayName="Regex: Match Identifier" sap2010:WorkflowViewState.IdRef="Assign_45">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[rxId]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[If(textOk, System.Text.RegularExpressions.Regex.Match(currentExtractedText, "\b[A-Z]{2,5}-\d{4,10}\b").Value, "")]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign DisplayName="Capture: parsedIdentifier (first match only)" sap2010:WorkflowViewState.IdRef="Assign_46">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[parsedIdentifier]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrEmpty(rxId) AndAlso String.IsNullOrEmpty(parsedIdentifier), rxId, parsedIdentifier)]</InArgument>
+                  </Assign.Value>
+                </Assign>
+              </Sequence>
+            </ActivityAction>
+          </ForEach>
+          <Assign DisplayName="STEP 7 â€” Build: out_DocumentTextBundle" sap:VirtualizedContainerService.HintSize="540,48" sap2010:WorkflowViewState.IdRef="Assign_47">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_DocumentTextBundle]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(allTextParts IsNot Nothing, String.Join(Environment.NewLine + Environment.NewLine, allTextParts.Where(Function(s) Not String.IsNullOrWhiteSpace(s)).ToList()), "")]</InArgument>
+            </Assign.Value>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </Assign>
+          <Assign DisplayName="STEP 7 â€” Build: out_DocumentNames" sap2010:WorkflowViewState.IdRef="Assign_48">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_DocumentNames]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(allDocNames IsNot Nothing, String.Join(",", allDocNames), "")]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="STEP 7 â€” Build: out_ExtractedData" sap2010:WorkflowViewState.IdRef="Assign_49">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_ExtractedData]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">["amount=" + If(parsedAmount IsNot Nothing, parsedAmount, "") + "; date=" + If(parsedDate IsNot Nothing, parsedDate, "") + "; identifier=" + If(parsedIdentifier IsNot Nothing, parsedIdentifier, "")]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="STEP 7 â€” Build: joinedNotes" sap2010:WorkflowViewState.IdRef="Assign_50">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[joinedNotes]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[If(notesLog IsNot Nothing AndAlso notesLog.Where(Function(s) Not String.IsNullOrEmpty(s)).Count() &gt; 0, String.Join("; ", notesLog.Where(Function(s) Not String.IsNullOrEmpty(s))), "All files processed successfully")]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="STEP 7 â€” Assign: out_ExtractionNotes" sap2010:WorkflowViewState.IdRef="Assign_51">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[out_ExtractionNotes]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[joinedNotes]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="STEP 8 â€” Set: out_ExtractionSuccess" sap2010:WorkflowViewState.IdRef="Assign_52">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_ExtractionSuccess]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">[Not String.IsNullOrWhiteSpace(out_DocumentTextBundle) AndAlso out_DocumentTextBundle.Trim().Length &gt; 20]</InArgument>
+            </Assign.Value>
+          </Assign>
+        </Sequence>
+      </If.Then>
+    </If>
+    <Assign DisplayName="Build textFilePath" sap:VirtualizedContainerService.HintSize="570,48" sap2010:WorkflowViewState.IdRef="Assign_textPath">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[textFilePath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrEmpty(in_ClaimFolderPath) AndAlso Not String.IsNullOrEmpty(in_ClaimId), System.IO.Path.Combine(in_ClaimFolderPath, in_ClaimId + "_ExtractedText.txt"), "")]</InArgument>
+      </Assign.Value>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </Assign>
+    <If Condition="[Not String.IsNullOrEmpty(textFilePath) AndAlso Not String.IsNullOrEmpty(out_DocumentTextBundle)]" DisplayName="Write extracted text to file" sap:VirtualizedContainerService.HintSize="570,517" sap2010:WorkflowViewState.IdRef="If_writeText">
+      <If.Then>
+        <TryCatch DisplayName="TryCatch: Write text file safely" sap:VirtualizedContainerService.HintSize="480,328" sap2010:WorkflowViewState.IdRef="TryCatch_writeText">
+          <TryCatch.Try>
+            <InvokeMethod DisplayName="WriteAllText — save extracted text" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="InvokeMethod_writeText" MethodName="WriteAllText" TargetType="si:File">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <InArgument x:TypeArguments="x:String">[textFilePath]</InArgument>
+              <InArgument x:TypeArguments="x:String">[out_DocumentTextBundle]</InArgument>
+            </InvokeMethod>
+          </TryCatch.Try>
+          <TryCatch.Catches>
+            <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_writeText">
+              <ActivityAction x:TypeArguments="s:Exception">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="s:Exception" Name="exWrite" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Text write failed — ignore" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_writeTextFail">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Sequence>
+              </ActivityAction>
+            </Catch>
+          </TryCatch.Catches>
+        </TryCatch>
+      </If.Then>
+    </If>
+    <Assign DisplayName="STEP 9 â€” Build auditFilePath" sap:VirtualizedContainerService.HintSize="570,48" sap2010:WorkflowViewState.IdRef="Assign_22">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[auditFilePath]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[If(Not String.IsNullOrEmpty(in_ClaimFolderPath), System.IO.Path.Combine(in_ClaimFolderPath, System.IO.Path.GetFileName(in_ClaimFolderPath) + ".txt"), "")]</InArgument>
+      </Assign.Value>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </Assign>
+    <Assign DisplayName="STEP 9 â€” Build auditEntry" sap:VirtualizedContainerService.HintSize="570,48" sap2010:WorkflowViewState.IdRef="Assign_23">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[auditEntry]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[Environment.NewLine + "------------------------------------------" + Environment.NewLine + "WF_Read_And_Extract_Document_Text" + Environment.NewLine + "------------------------------------------" + Environment.NewLine + "documentTextBundleLength : " + If(out_DocumentTextBundle IsNot Nothing, out_DocumentTextBundle.Length.ToString(), "0") + Environment.NewLine + "documentNames : " + If(out_DocumentNames IsNot Nothing, out_DocumentNames, "") + Environment.NewLine + "extractedData : " + If(out_ExtractedData IsNot Nothing, out_ExtractedData, "") + Environment.NewLine + "extractionSuccess : " + out_ExtractionSuccess.ToString() + Environment.NewLine + "extractionNotes : " + If(out_ExtractionNotes IsNot Nothing, out_ExtractionNotes, "") + Environment.NewLine + "timestamp : " + Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine + Environment.NewLine]</InArgument>
+      </Assign.Value>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </Assign>
+    <If Condition="[Not String.IsNullOrEmpty(auditFilePath)]" DisplayName="STEP 9 â€” Append audit if path valid" sap:VirtualizedContainerService.HintSize="570,517" sap2010:WorkflowViewState.IdRef="If_9">
+      <If.Then>
+        <TryCatch DisplayName="TryCatch: Append audit safely" sap:VirtualizedContainerService.HintSize="480,328" sap2010:WorkflowViewState.IdRef="TryCatch_2">
+          <TryCatch.Try>
+            <InvokeMethod DisplayName="Append to audit file" sap:VirtualizedContainerService.HintSize="450,24" sap2010:WorkflowViewState.IdRef="InvokeMethod_1" MethodName="AppendAllText" TargetType="si:File">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <InArgument x:TypeArguments="x:String">[auditFilePath]</InArgument>
+              <InArgument x:TypeArguments="x:String">[auditEntry]</InArgument>
+            </InvokeMethod>
+          </TryCatch.Try>
+          <TryCatch.Catches>
+            <Catch x:TypeArguments="s:Exception" sap2010:WorkflowViewState.IdRef="Catch_2">
+              <ActivityAction x:TypeArguments="s:Exception">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="s:Exception" Name="exAudit" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Audit append failed â€” ignore" sap:VirtualizedContainerService.HintSize="480,96" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </Sequence>
+              </ActivityAction>
+            </Catch>
+          </TryCatch.Catches>
+        </TryCatch>
+      </If.Then>
+    </If>
+  </Sequence>
+</Activity>

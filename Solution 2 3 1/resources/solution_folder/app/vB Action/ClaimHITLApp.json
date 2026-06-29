@@ -1,0 +1,37 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "ClaimHITLApp",
+    "kind": "app",
+    "type": "vB Action",
+    "apiVersion": "apps.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "HITLApp",
+        "kind": "appVersion"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "ClaimHITLApp",
+      "description": null,
+      "type": "Regular",
+      "appSystemName": "IDd34cce9beeb0472eaeab9d6762d46245",
+      "version": "2.0.0",
+      "appVersionRef": {
+        "name": "HITLApp",
+        "key": "ID2cff906d97ac49f3b0f8206162caf801"
+      },
+      "actionSchema": "{\u0022key\u0022:\u002253d843d4-c1c8-451e-a2a2-488d678fcf75\u0022,\u0022version\u0022:2,\u0022__isDeleted\u0022:false,\u0022dateLastModified\u0022:\u00222026-06-29T18:55:30.298Z\u0022,\u0022description\u0022:\u0022Action Schema\u0022,\u0022id\u0022:\u0022IDa0802dfa9ffd40f09974cf02eb73ad20\u0022,\u0022inOuts\u0022:[],\u0022inputs\u0022:[{\u0022name\u0022:\u0022claimId\u0022,\u0022key\u0022:\u0022128c1f80-dbc2-4a73-809e-3783514e1d6a\u0022,\u0022required\u0022:true,\u0022type\u0022:\u0022System.String\u0022,\u0022jsType\u0022:\u0022string\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022version\u0022:0},{\u0022name\u0022:\u0022confidence\u0022,\u0022key\u0022:\u0022b2cc99dc-3ffa-4100-a163-811badb5f5d3\u0022,\u0022required\u0022:true,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022version\u0022:0,\u0022type\u0022:\u0022System.Decimal\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null},{\u0022name\u0022:\u0022fraudRiskScore\u0022,\u0022key\u0022:\u00224c4f2a28-8dcb-498f-a4fb-6e6fc631a36a\u0022,\u0022required\u0022:true,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022version\u0022:0,\u0022type\u0022:\u0022System.Decimal\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null}],\u0022name\u0022:\u0022ActionSchema\u0022,\u0022outcomes\u0022:[{\u0022name\u0022:\u0022approve\u0022,\u0022key\u0022:\u0022a226b605-365b-459a-bb50-6ff79039e210\u0022,\u0022required\u0022:false,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022version\u0022:0,\u0022type\u0022:\u0022System.String\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null},{\u0022name\u0022:\u0022reject\u0022,\u0022key\u0022:\u0022656d36e5-0111-47dc-bc22-3abf550f1972\u0022,\u0022required\u0022:false,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022version\u0022:0,\u0022type\u0022:\u0022System.String\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null}],\u0022outputs\u0022:[{\u0022name\u0022:\u0022outDecision\u0022,\u0022key\u0022:\u0022d1040db7-9134-4779-b9f3-1c3948d3a94f\u0022,\u0022required\u0022:false,\u0022customType\u0022:null,\u0022properties\u0022:[],\u0022version\u0022:0,\u0022type\u0022:\u0022System.String\u0022,\u0022typeNamespace\u0022:\u0022system\u0022,\u0022isList\u0022:false,\u0022collectionDataType\u0022:null}]}"
+    },
+    "locks": [],
+    "key": "12be4bdb-6e3d-485a-8b34-0d67765e5b62"
+  }
+}

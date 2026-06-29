@@ -1,0 +1,60 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "AG_Claim_Analysis_Core",
+    "kind": "process",
+    "type": "agent",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "325579b9-6e9e-4dd5-a44b-27c986979b07",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "AG_Claim_Analysis_Core",
+        "kind": "package"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "targetRuntime": null,
+      "referencedAssets": null,
+      "entryPointUniqueId": null,
+      "inputArgumentsSchema": null,
+      "outputArgumentsSchema": null,
+      "inputArgumentsSchemaV2": null,
+      "outputArgumentsSchemaV2": null,
+      "type": "Agent",
+      "name": "AG_Claim_Analysis_Core",
+      "description": null,
+      "package": {
+        "key": "df8cdd79-ecf3-4567-b715-f95445835e55"
+      },
+      "packageName": "Solution.2.agent.AG_Claim_Analysis_Core",
+      "packageVersion": null,
+      "entryPointName": null,
+      "inputArguments": "{}",
+      "hiddenForAttendedUser": false,
+      "alwaysRunning": false,
+      "autoStartProcess": false,
+      "targetFrameworkValue": "Portable",
+      "agentMemory": false,
+      "environmentVariables": null,
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "retentionBucketRef": null,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180,
+      "staleRetentionBucketRef": null,
+      "entryPoints": "{\n  \u0022$schema\u0022: \u0022https://cloud.uipath.com/draft/2024-12/entry-point\u0022,\n  \u0022$id\u0022: \u0022entry-points.json\u0022,\n  \u0022entryPoints\u0022: [\n    {\n      \u0022filePath\u0022: \u0022/content/agent.json\u0022,\n      \u0022type\u0022: \u0022agent\u0022,\n      \u0022uniqueId\u0022: \u0022c86d6194-7a82-4ce7-a5cf-50b115c1764e\u0022,\n      \u0022input\u0022: {\n        \u0022type\u0022: \u0022object\u0022,\n        \u0022properties\u0022: {\n          \u0022claim_id\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Unique claim identifier for traceability.\u0022\n          },\n          \u0022document_text_bundle\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Combined extracted text from all claim documents. Primary evidence source for classification and fact extraction.\u0022\n          },\n          \u0022extraction_notes\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Extraction quality notes from WF_Read_And_Extract_Document_Text. May include OCR-FAIL, EMPTY-TEXT, UNSUPPORTED, EmptyOrSkipped\u003E0.\u0022\n          },\n          \u0022knowledge_bundle\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Knowledge base content for claim analysis. Must be read FIRST. If empty or under 50 chars, apply built-in defaults and cap confidence at 0.60.\u0022\n          },\n          \u0022knowledge_quality_hint\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022KB load status: KNOWLEDGE_LOAD_OK, KNOWLEDGE_LOAD_PARTIAL, KNOWLEDGE_LOAD_FAILED.\u0022\n          }\n        },\n        \u0022required\u0022: [\n          \u0022claim_id\u0022,\n          \u0022document_text_bundle\u0022,\n          \u0022knowledge_bundle\u0022,\n          \u0022knowledge_quality_hint\u0022\n        ]\n      },\n      \u0022output\u0022: {\n        \u0022type\u0022: \u0022object\u0022,\n        \u0022properties\u0022: {\n          \u0022category\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Exactly one of: Healthcare, Vehicle, Travel. Never Generic. Determined by document evidence using dual-signal confirmation where possible.\u0022,\n            \u0022enum\u0022: [\n              \u0022Healthcare\u0022,\n              \u0022Vehicle\u0022,\n              \u0022Travel\u0022\n            ]\n          },\n          \u0022category_confidence\u0022: {\n            \u0022type\u0022: \u0022number\u0022,\n            \u0022description\u0022: \u0022Confidence in category classification, 0.05 to 1.0, rounded to 2 decimal places. Starts at 1.0 and deductions are applied. Hard cap at 0.60 if KB is missing or under 50 chars.\u0022\n          },\n          \u0022eligible\u0022: {\n            \u0022type\u0022: \u0022boolean\u0022,\n            \u0022description\u0022: \u0022Whether the claim meets basic eligibility criteria based on document content and KB rules.\u0022\n          },\n          \u0022eligibility_reason\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Concise reason why eligible was set true or false. Must reference specific document evidence or KB rule applied.\u0022\n          },\n          \u0022documents_complete\u0022: {\n            \u0022type\u0022: \u0022boolean\u0022,\n            \u0022description\u0022: \u0022Whether all required documents for the identified category are present and readable in document_text_bundle.\u0022\n          },\n          \u0022missing_documents\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Pipe-separated list of missing required document types. Use empty string if documents_complete is true. Example: Travel insurance certificate|Booking confirmation|Incident report\u0022\n          },\n          \u0022request_message\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Claimant-friendly message describing which documents are still needed and why. Use empty string if documents_complete is true.\u0022\n          },\n          \u0022claim_summary\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Concise 2-4 sentence claim summary covering category, eligibility, document status, and key facts. Must include KB note if KB was missing or partial. Must include confidence note if analysis_confidence is below 0.50.\u0022\n          },\n          \u0022key_document_facts\u0022: {\n            \u0022type\u0022: \u0022string\u0022,\n            \u0022description\u0022: \u0022Pipe-separated key facts explicitly found in the documents. Include claim amounts, dates, identifiers, and category-specific facts. Do NOT infer missing values.\u0022\n          },\n          \u0022analysis_confidence\u0022: {\n            \u0022type\u0022: \u0022number\u0022,\n            \u0022description\u0022: \u0022Overall analysis confidence after all deductions, 0.05 to 1.0, rounded to 2 decimal places. Starts at 1.0. Hard cap at 0.60 if KB missing. Minimum floor 0.05.\u0022\n          }\n        },\n        \u0022required\u0022: [\n          \u0022category\u0022,\n          \u0022category_confidence\u0022,\n          \u0022eligible\u0022,\n          \u0022eligibility_reason\u0022,\n          \u0022documents_complete\u0022,\n          \u0022missing_documents\u0022,\n          \u0022request_message\u0022,\n          \u0022claim_summary\u0022,\n          \u0022key_document_facts\u0022,\n          \u0022analysis_confidence\u0022\n        ]\n      }\n    }\n  ]\n}",
+      "connections": null,
+      "tags": []
+    },
+    "locks": [],
+    "key": "4bc2f32d-b11e-45cc-abdc-7f8cbd66a99c"
+  }
+}

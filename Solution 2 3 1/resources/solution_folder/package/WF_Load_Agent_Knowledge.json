@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Load_Agent_Knowledge",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "a8ec3adc-e229-423c-9039-9ec6150e26ab",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "WF_Load_Agent_Knowledge",
+      "description": null
+    },
+    "locks": [],
+    "key": "7f9e23dd-68c8-4d75-8b49-b7e98b173dea"
+  }
+}

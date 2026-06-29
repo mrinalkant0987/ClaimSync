@@ -1,0 +1,6 @@
+{
+  "ProjectType": "Process",
+  "Name": "WF_Load_Knowledge_File",
+  "Description": null,
+  "MainFile": "Main.xaml"
+}

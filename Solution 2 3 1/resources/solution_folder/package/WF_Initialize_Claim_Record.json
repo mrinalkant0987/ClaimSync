@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "WF_Initialize_Claim_Record",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "050805b1-8167-4b06-863b-c661828cdbeb",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "WF_Initialize_Claim_Record",
+      "description": null
+    },
+    "locks": [],
+    "key": "4ede26fb-4f8e-40ca-a424-2fb681002109"
+  }
+}
